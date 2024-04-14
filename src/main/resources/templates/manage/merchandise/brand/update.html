@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{manage/layout/layout :: main-fragment(
+                                                ~{:: title},
+                                                ~{:: #css-resources},
+                                                ~{:: #js-resources},
+                                                ~{:: #main-content}
+                                               )}">
+<head>
+  <meta charset="UTF-8">
+  <title>Cập nhật Hãng</title>
+
+  <th:block id="css-resources">
+  </th:block>
+
+</head>
+<body>
+<th:block id="main-content">
+  <main id="main" class="main">
+
+    <div class="page-title">
+      <h1>Cập nhật Hãng</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="list.html">Hãng</a></li>
+          <li class="breadcrumb-item active"><a href="update.html"></a>Cập nhật</li>
+        </ol>
+      </nav>
+    </div><!-- End Page Title -->
+
+    <section class="section">
+      <div class="row">
+        <div class="col-lg-12">
+
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title"></h5>
+
+              <!-- General Form Elements -->
+              <form id="form">
+                <input type="hidden" name="id" id="id" class="form-control" >
+                <div class="row mb-3">
+                  <label class="col-sm-2 col-form-label">Tên Hãng</label>
+                  <div class="col-sm-10">
+                    <label>
+                      <input type="text" name="name" id="name" class="form-control">
+                    </label>
+                  </div>
+                </div>
+
+                <div class="row mb-3">
+                  <label class="col-sm-2 col-form-label">Xắp sếp</label>
+                  <div class="col-sm-10">
+                    <label>
+                      <input type="number" name="sort" id="sort" class="form-control">
+                    </label>
+                  </div>
+                </div>
+
+                <div class="row mb-3">
+                  <label class="col-sm-2 col-form-label">Hình ảnh</label>
+                  <div class="col-sm-10">
+                    <div id="image-preview" style="position:relative; width:250px; height:250px; display: none">
+                    </div>
+                    <label style="cursor: pointer" for="image"><i style="font-size: 25px;" class="bi bi-upload"></i></label>
+                    <input name="fileImage" id="image" type="file" accept="image/*" style="display: none" onchange="showImgPreview('image-preview','image',this)">
+                  </div>
+                </div>
+
+                <div class="row mb-3">
+                  <label class="col-sm-2 col-form-label pt-0">Trạng thái</label>
+                  <div class="col-sm-2">
+                    <select class="form-select " name="status" id="status" aria-label="Default select example">
+                      <option selected="" value="1">Sử dụng</option>
+                      <option value="0">Không sử dụng</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="row mb-3">
+                  <label class="col-sm-2 col-form-label"></label>
+                  <div class="col-sm-10">
+                    <button type="submit" class="btn btn-primary">Cập nhập</button>
+                  </div>
+                </div>
+              </form>
+              <!-- End General Form Elements -->
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+</th:block>
+
+<th:block id="js-resources">
+  <script th:inline="javascript">
+    const form = $("#form");
+    form.validate({
+      rules: {
+        name: {
+          required: true,
+          maxlength: 50
+        },
+        sort:{
+          required: true,
+        },
+
+      },
+      messages: {
+        name: "Vui lòng nhập tên và tên < 50 ký tự",
+        sort: "Vui lòng nhập Xắp sếp"
+      }
+    });
+    const id = [[${id}]];
+
+    form.on( "submit", function(e) {
+      e.preventDefault();
+      if(form.valid()){
+        let form = $('#form')[0];
+        let data = new FormData(form);
+        let res = ajaxCall(apiDomain + API.getMerchandiseBrandUrl(),data,'PATCH',false);
+        if(res.status==="success") {
+          alert("Cập nhật thành công");
+          $(location).attr('href', './list');
+        }else{
+          alert(res.msg);
+        }
+      }
+    });
+
+    $(document).ready(function() {
+      let res = ajaxCall(apiDomain + API.getMerchandiseBrandUrl(id),'','GET',false);
+      if(res.status==="success") {
+        $("#id").val(id);
+        $("#name").val(res.data.name);
+        $("#sort").val(res.data.sort);
+        addImgByUrl('image-preview',res.data.image, 'imgPreviewOld');
+        showImgPreview('image-preview','image',$("#image"))
+        $("#status").val(res.data.status).change();
+      }else{
+        alert(res.msg);
+      }
+    });
+
+  </script>
+</th:block>
+</body>
+</html>

@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html" xmlns:sec="http://www.w3.org/1999/xhtml"
+      th:replace="~{manage/layout/layout :: main-fragment(
+                                                ~{:: title},
+                                                ~{:: #css-resources},
+                                                ~{:: #js-resources},
+                                                ~{:: #main-content}
+                                               )}">
+<head>
+  <meta charset="UTF-8">
+  <title>Cập nhật component</title>
+
+  <th:block id="css-resources">
+    <style>
+
+    </style>
+  </th:block>
+
+</head>
+<body>
+<th:block id="main-content">
+  <main id="main" class="main">
+
+    <div class="pagetitle">
+      <h1>Cập nhật component</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="/admin/config/component">Component</a></li>
+          <li class="breadcrumb-item active"><a href="/admin/config/component/insert"></a>Cập nhật</li>
+        </ol>
+      </nav>
+    </div><!-- End Page Title -->
+
+    <section class="section">
+      <div class="row">
+        <div class="col-lg-12">
+
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title"></h5>
+
+              <!-- General Form Elements -->
+              <form id="form-component">
+                <input type="hidden" name="id" id="component-id"/>
+                <div class="row mb-3">
+                  <label class="col-sm-2 col-form-label">Tên component</label>
+                  <div class="col-sm-9">
+                    <input id="component-name" type="text" name="name" class="form-control">
+                  </div>
+                </div>
+
+                <div class="row mb-3" id="template-tag">
+                  <label class="col-sm-2 col-form-label">Template</label>
+                  <div class="col-sm-9">
+                    <input type="text" id="template-name" name="name" class="form-control" disabled>
+                  </div>
+                </div>
+
+                <div class="row mb-3">
+                  <label class="col-sm-2 col-form-label">Chọn template</label>
+                  <div class="col-sm-9">
+                    <select class="form-select" name="idTemplate" aria-label="" id="list-template">
+                      <option selected="" value="">Chọn template</option>
+                    </select>
+                  </div>
+                  <div class="col-sm-1">
+                    <div><a href="/admin/config/template/insert" style="color: black"><i id="admin-download" style="font-size: 25px; cursor: pointer" class="bi bi-plus-circle"></i></a></div>
+                  </div>
+                </div>
+
+                <div class="row mb-3">
+                  <label class="col-sm-2 col-form-label">Trạng thái</label>
+                  <div class="col-sm-9">
+                    <select class="form-select" name="status" aria-label="" id="status">
+                      <option selected="" value="1">Sử dụng</option>
+                      <option value="0">Không sử dụng</option>
+                    </select>
+                  </div>
+                </div>
+
+              </form>
+
+              <div class="row mb-3" style="display: none" id="area-template">
+                <div id="template-admin" class="col-sm-7 p-3" style="border: #ccc solid 1px; border-radius: 5px">
+                  <form id="template-form-admin">
+                  </form>
+                  <!-- template admin !-->
+                </div>
+                <div class="col-sm-5">
+                  <img src="" class="img-fluid" alt="image preview" id="img-preview">
+                </div>
+
+              </div>
+
+              <div class="row mb-3" sec:authorize="hasRole('COMPONENT_E')">
+                <label class="col-sm-2 col-form-label"></label>
+                <div class="col-sm-10">
+                  <button type="button" class="btn btn-primary" onclick="update()">Cập nhật</button>
+                  <button type="button" class="btn btn-danger" onclick="cancel('/admin/config/component')">Hủy</button>
+                </div>
+              </div>
+
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+</th:block>
+
+<th:block id="js-resources">
+  <script th:inline="javascript">
+    const id = [[${id}]];
+    let isChoiceTemplate = true;
+
+    $(document).ready(function() {
+      addOptionTemplate();
+      getDetail();
+    });
+
+    $("#form-component").validate({
+      invalidHandler: function(form, validator) {
+        let errors = validator.numberOfInvalids();
+        if (errors) {
+          validator.errorList[0].element.focus();
+        }
+      },
+      highlight: function(element, errorClass) {
+        $(element).removeClass(errorClass);
+      },
+      rules: {
+        name: "required",
+      },
+      messages: {
+        name: "Vui lòng nhập tên",
+      }
+    });
+
+
+    function update(){
+      if($("#form-component").valid()){
+        let jsonForm = getJsonByForm('template-form-admin','list',true,true,true);
+        if(!isChoiceTemplate){
+          alert("Vui lòng chọn template");
+          return false;
+        }else{
+          if(jsonForm == false){
+            alert("Vui lòng nhập đầy đủ thông tin template");
+            return false;
+          }
+        }
+        let form = $('#form-component')[0];
+        let formData = new FormData(form);
+        formData.set('data', JSON.stringify(jsonForm));
+        formData.set('templateData', $('#template-form-admin').html());
+        let res = ajaxCall(apiDomain + '/api/v1/admin/config/component',formData,'put',false);
+        if(res.status=="success") {
+          alert("Cập nhật thành công");
+          $(location).attr('href', '/admin/config/component');
+        }
+      }
+    }
+
+    function addOptionTemplate(){
+      let result = ajaxCall(apiDomain + '/api/v1/admin/config/template/all','','get');
+      if(result.status=="success"){
+        let listOption = '';
+        result.data.forEach((item, index) => {
+          listOption += `<option value="${item.id}">${item.name}</option>`
+        });
+        $('#list-template').append(listOption);
+      }
+    }
+
+    $("#list-template").on( "change", function() {
+      let id = $(this).val();
+      if(id !== ''){
+        isChoiceTemplate = true;
+        $("#template-tag").show();
+        let result = ajaxCall(apiDomain + '/api/v1/admin/config/template/'+id,'','get',false);
+        if(result.status=="success") {
+          $("#template-name").val($(this).find("option:selected").text());
+          $('#area-template').show();
+          let res = result.data;
+          $('#template-form-admin').html(res.htmlAdmin);
+          $('#img-preview').attr("src", res.imgPreview);
+        }
+      }else{
+        isChoiceTemplate = false;
+        $('#template-form-admin').empty();
+        $("#template-tag").hide();
+        $('#area-template').hide();
+      }
+    });
+
+    function getDetail(){
+      let result = ajaxCall(apiDomain + '/api/v1/admin/config/component/'+id,'','get',false);
+      if(result.status=="success") {
+        let res = result.data;
+        $("#component-id").val(res.id);
+        $("#component-name").val(res.name);
+        $("#template-name").val(res.templateName);
+        $("#status").val(res.status).change();
+        $('#area-template').show();
+        $('#template-form-admin').html(res.templateData);
+        $('#img-preview').attr("src", res.imgPreview);
+      }
+    }
+
+
+  </script>
+</th:block>
+</body>
+</html>

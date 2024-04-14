@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{manage/layout/layout :: main-fragment(
+                                                ~{:: title},
+                                                ~{:: #css-resources},
+                                                ~{:: #js-resources},
+                                                ~{:: #main-content}
+                                               )}">
+<head>
+  <meta charset="UTF-8">
+  <title>Template</title>
+
+  <th:block id="css-resources">
+    <style>
+
+    </style>
+  </th:block>
+
+</head>
+<body>
+<th:block id="main-content">
+  <main id="main" class="main">
+
+    <div class="pagetitle">
+      <h1>Template</h1>
+    </div><!-- End Page Title -->
+    <section class="section">
+      <div class="row">
+        <div class="col-lg-12">
+
+          <div class="card">
+            <div class="card-body">
+              <br>
+
+              <div class="datatable-top">
+<!--                <div class="datatable-search">-->
+
+                  <div class="common-search">
+                    <div class="search-bar">
+                      <form class="search-form d-flex align-items-center" method="get" action="#" id="frm">
+                        <input type="text" name="query" placeholder="Theo tên template" title="Enter search keyword">
+                        <button type="submit" title="Search"><i class="bi bi-search"></i></button>
+                      </form>
+                    </div>
+                  </div>
+<!--                </div>-->
+                <div style="float: right">
+                  <button type="button" class="btn btn-success btn-sm" onclick="location.href='/insert';">Thêm mới</button>
+                  <button type="button" class="btn btn-danger btn-sm">Xóa</button>
+                </div>
+
+              </div>
+
+              <!-- Table with stripped rows -->
+              <table class="table table-striped">
+                <thead>
+                <tr>
+                  <th scope="row">
+                    <input class="form-check-input" type="checkbox">
+                  </th>
+                  <th scope="col">#</th>
+                  <th scope="col">Mã</th>
+                  <th scope="col">Tên</th>
+                  <th scope="col">Kiểu</th>
+                  <th scope="col">Trạng thái</th>
+                </tr>
+                </thead>
+                <tbody id="data-table">
+                <tr>
+                  <th>
+                    <input class="form-check-input" type="checkbox">
+                  </th>
+                  <th scope="row">1</th>
+                  <td>Brandon Jacob</td>
+                  <td>Designer</td>
+                  <td>28</td>
+                  <td><span class="badge rounded-pill bg-success">Sử dụng</span></td>
+                </tr>
+                <tr>
+                  <th>
+                    <input class="form-check-input" type="checkbox" id="">
+                  </th>
+                  <th scope="row">2</th>
+                  <td>Bridie Kessler</td>
+                  <td>Developer</td>
+                  <td>35</td>
+                  <td><span class="badge rounded-pill bg-danger">Không sử dụng</span></td>
+                </tr>
+                </tbody>
+              </table>
+
+              <!-- End Table with stripped rows -->
+              <th:block th:replace="~{/manage/fragments/pagination :: ${pagination}}"></th:block>
+
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+</th:block>
+
+<th:block id="js-resources">
+  <script th:inline="javascript">
+
+    $( document ).ready(function() {
+      loadDataTable(1);
+    });
+    const pageParam = {
+      'formId': 'frm',
+      'dataListUrl': '/api'
+    };
+    //build list data
+    //default name: getDataTable(data)
+    function getDataTable(data){
+      let listData ='';
+      data.forEach((element, index) => {
+        listData += '<tr>' +
+                '                  <th>' +
+                '                    <input class="form-check-input" type="checkbox">' +
+                '                  </th>' +
+                '                  <th scope="row">'+rowOrder(index)+'</th>' +
+                '                  <td>'+element.id+'</td>' +
+                '                  <td>'+element.name+'</td>' +
+                '                  <td>'+element.type+'</td>' +
+                '                  <td><span class="badge rounded-pill bg-success">'+element.status+'</span></td>' +
+                '                </tr>'
+
+      });
+      return listData;
+    }
+
+
+  </script>
+</th:block>
+</body>
+</html>

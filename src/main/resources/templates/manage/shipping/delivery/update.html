@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html"
+      th:replace="~{manage/layout/layout :: main-fragment(
+                                                ~{:: title},
+                                                ~{:: #css-resources},
+                                                ~{:: #js-resources},
+                                                ~{:: #main-content}
+                                               )}">
+<head>
+  <meta charset="UTF-8">
+  <title>Cập nhật đơn vị vận chuyển</title>
+
+  <th:block id="css-resources">
+    <style>
+
+    </style>
+  </th:block>
+
+</head>
+<body>
+<th:block id="main-content">
+  <main id="main" class="main">
+
+    <div class="pagetitle">
+      <h1>Cập nhật đơn vị vận chuyển</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="/admin/shipping/">Đơn vị vận chuyển</a></li>
+          <li class="breadcrumb-item active"><a href="/admin/shipping/update"></a>Cập nhật</li>
+        </ol>
+      </nav>
+    </div><!-- End Page Title -->
+
+    <section class="section">
+      <div class="row">
+        <div class="col-lg-12">
+
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title"></h5>
+
+              <!-- General Form Elements -->
+              <form id="form-shipping-update">
+                <div class="row mb-3">
+                  <label class="col-sm-2 col-form-label">Mã đơn vị vận chuyển</label>
+                  <div class="col-sm-9">
+                    <input type="text" name="id" class="form-control" disabled>
+                  </div>
+                </div>
+
+                <div class="row mb-3">
+                  <label class="col-sm-2 col-form-label">Tên đơn vị vận chuyển</label>
+                  <div class="col-sm-9">
+                    <input type="text" name="name" class="form-control">
+                  </div>
+                </div>
+
+                <div class="row mb-3">
+                  <label class="col-sm-2 col-form-label">Api key</label>
+                  <div class="col-sm-9">
+                    <input type="text" name="apiKey" class="form-control">
+                  </div>
+                </div>
+
+                <div class="row mb-3">
+                  <label class="col-sm-2 col-form-label">API key (dev)</label>
+                  <div class="col-sm-9">
+                    <input type="text" name="apiKeyDev" class="form-control">
+                  </div>
+                </div>
+
+                <div class="row mb-3 mt-5">
+                  <label class="col-sm-4 col-form-label"></label>
+                  <div class="row col-sm-8">
+                    <div class="col-md-4 form-check">
+                      <input class="form-check-input" type="radio" name="status" id="true" value="true">
+                      <label class="form-check-label" for="true">
+                        Sử dụng
+                      </label>
+                    </div>
+                    <div class="col-md-4 form-check">
+                      <input class="form-check-input" type="radio" name="status" id="false" value="false">
+                      <label class="form-check-label" for="false">
+                        Không sử dụng
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+              </form>
+
+              <div class="row mb-3">
+                <label class="col-sm-2 col-form-label"></label>
+                <div class="col-sm-10">
+                  <button type="button" class="btn btn-primary" onclick="update()">Cập nhật</button>
+                  <button type="button" class="btn btn-danger" onclick="cancel('/manage/shipping')">Hủy</button>
+                </div>
+              </div>
+
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+</th:block>
+
+<th:block id="js-resources">
+  <script th:inline="javascript">
+    const id = [[${id}]];
+    let shippingFrm = $("#form-shipping-update");
+
+    $(document).ready(function() {
+      getDetail();
+    });
+
+    shippingFrm.validate({
+      invalidHandler: function(form, validator) {
+        let errors = validator.numberOfInvalids();
+        if (errors) {
+          validator.errorList[0].element.focus();
+        }
+      },
+      highlight: function(element, errorClass) {
+        $(element).removeClass(errorClass);
+      },
+      rules: {
+        name: "required",
+      },
+      messages: {
+        name: "Vui lòng nhập tên",
+      }
+    });
+
+    function update(){
+      if(shippingFrm.valid()){
+        let object = {};
+        let shipping = document.forms["form-shipping-update"];
+        let form = new FormData(shipping);
+        form.forEach((value, key) => object[key] = value);
+        let status = $("input[name='status']:checked").val();
+        object['status'] = status;
+        let res = ajaxCall(apiDomain + '/api/v1/admin/shipping/' + id , object, 'patch');
+        if(res.status == "success") {
+          alert("Cập nhật thành công");
+        }
+      }
+    }
+
+    function getDetail(){
+      let result = ajaxCall(apiDomain + '/api/v1/admin/shipping/detail/'+id,'','get',false);
+      if(result.status=="success") {
+        let res = result.data;
+        $("input[name='id']").val(res.id);
+        $("input[name='name']").val(res.name);
+        $("input[name='apiKey']").val(res.apiKey);
+        $("input[name='apiKeyDev']").val(res.apiKeyDev);
+        $('input[name="status"][value="' + res.status + '"]').prop('checked', true);
+      } else {
+        alert(result.msg);
+      }
+    }
+
+
+  </script>
+</th:block>
+</body>
+</html>

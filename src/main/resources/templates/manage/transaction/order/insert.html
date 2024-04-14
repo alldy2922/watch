@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html"
+      th:replace="~{manage/layout/layout :: main-fragment(
+                                                ~{:: title},
+                                                ~{:: #css-resources},
+                                                ~{:: #js-resources},
+                                                ~{:: #main-content}
+                                               )}">
+<head>
+  <meta charset="UTF-8">
+  <title>Thêm mới đơn hàng</title>
+
+  <th:block id="css-resources">
+    <style>
+      .datatable-table th button, .datatable-pagination-list button {
+        color: #fff;
+        background-color: #198754;
+      }
+    </style>
+  </th:block>
+
+</head>
+<body>
+<th:block id="main-content">
+  <main id="main" class="main">
+
+    <div class="pagetitle">
+      <h1>Thêm mới đơn hàng</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="/manage/transaction/order/">Đơn hàng</a></li>
+          <li class="breadcrumb-item active"><a href="/manage/transaction/order/insert"></a>Thêm mới đơn hàng</li>
+        </ol>
+      </nav>
+    </div><!-- End Page Title -->
+
+    <section class="section">
+
+      <div class="card">
+        <div class="card-body" style="padding-top: 20px">
+          <ul class="nav nav-tabs nav-tabs-bordered" id="borderedTab" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#bordered-home" type="button" role="tab" aria-controls="home" aria-selected="true">Thông tin hoá đơn </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#bordered-profile" type="button" role="tab" aria-controls="profile" aria-selected="false" tabindex="-1">Vận đơn</button>
+            </li>
+          </ul>
+          <div class="tab-content pt-5" id="borderedTabContent">
+            <div class="tab-pane fade active show" id="bordered-home" role="tabpanel" aria-labelledby="home-tab">
+              <form id="order-create-form" class="row g-3">
+                <div class="row col-md-12">
+                  <label class="form-label col-md-3">Khách hàng</label>
+                  <div class="col-md-9">
+                    <div class="input-group">
+                      <input type="hidden" class="form-control" name="customerId" >
+                      <input type="text" readonly class="form-control" id="customerDisplay" disabled >
+                      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#customer-popup" >Chọn khách hàng</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <label for="paymentType" class="form-label">Kiểu thanh toán</label>
+                  <select class="form-select editable" name="paymentType" id="paymentType" >
+                    <option selected="" value="">Lựa chọn phương thức thanh toán</option>
+                    <option value="COD">COD</option>
+                    <option value="VIETQR">Ck ngân hàng (VietQR)</option>
+                    <option value="VISA">Visa</option>
+                    <option value="MOMO">Momo</option>
+                    <option value="VN_PAY">Vnpay</option>
+                  </select>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-check" style="padding-top: 2.5rem">
+                    <input class="form-check-input editable" type="checkbox" name="isPaid" id="isPaid" >
+                    <label class="form-check-label" for="isPaid">
+                      Đã thanh toán
+                    </label>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <label for="price" class="form-label">Giá gốc</label>
+                  <input readonly type="text" class="form-control" id="price"  value="0">
+                </div>
+                <div class="col-md-6">
+                  <label for="discountPrice" class="form-label">Giá giảm </label>
+                  <input type="number" class="form-control editable" id="discountPrice" name="discountPrice" value="0" min="0">
+                </div>
+                <div class="col-md-6">
+                  <label for="promotion" class="form-label">Mã giảm gíá </label>
+<!--                  <input readonly type="text" class="form-control" id="promotion" name="promotion">-->
+                  <select class="form-select " name="promotion" id="promotion"
+                          aria-label="Danh mục cấp độ cao hơn"  onchange="setPrice()">
+                  </select>
+                </div>
+                <div class="col-md-6">
+                  <label for="cost" class="form-label">Thành tiền </label>
+                  <input type="text" class="form-control" id="cost" disabled>
+                </div>
+                <div class="col-md-12 row">
+                  <h4>Chi tiết đơn hàng</h4>
+                  <div class="col-md-4" style="padding-top: 16px">
+                    <div class="row mb-3">
+                      <label for="productId" class="col-sm-2 col-form-label">Mã SP</label>
+                      <div class="col-sm-10">
+                        <input type="text" class="form-control" id="productId" disabled>
+                      </div>
+                    </div>
+                    <div class="row mb-3">
+                      <label class="col-sm-2 col-form-label">Tên SP</label>
+                      <div class="col-sm-10">
+                        <input type="hidden" class="form-control" id="order-detail-row" value="-1">
+                        <input type="hidden" class="form-control" id="productName">
+                        <input type="hidden" class="form-control" id="productPrice">
+                        <select class="form-select" aria-label="Default select example" id="product-select">
+                        </select>
+                      </div>
+                    </div>
+                    <div class="row mb-3">
+                      <label class="col-sm-2 col-form-label">Loại</label>
+                      <div class="col-sm-10">
+                        <input type="text" class="form-control" id="productType">
+                      </div>
+                    </div>
+                    <div class="row mb-3">
+                      <label class="col-sm-2 col-form-label">Số lượng</label>
+                      <div class="col-sm-10">
+                        <input type="number" class="form-control" id="quantity" value="1" min="1">
+                      </div>
+                    </div>
+                    <div class="d-flex flex-row-reverse">
+                      <button type="button" class="btn btn-success" onclick="addRow()" id="save-order-detail">
+                        Thêm sản phẩm
+                      </button>
+                    </div>
+                  </div>
+                  <div class="col-md-8">
+                    <table class="datatable table table-striped" id="orderDetail">
+                      <thead>
+                      <tr>
+                        <th scope="col">Mã SP</th>
+                        <th scope="col">Tên sản phẩm</th>
+                        <th scope="col">Loại</th>
+                        <th scope="col">Giá</th>
+                        <th scope="col">Số lượng</th>
+                        <th scope="col">Tạm tính</th>
+                        <th scope="col">
+                        </th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <div class="col-md-12 accordion" id="accordionExample">
+                  <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingOne">
+                      <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                        Thông tin giao hàng
+                      </button>
+                    </h2>
+                    <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample" style="">
+                      <div class="accordion-body row">
+                        <h6 class="mb-4">Địa chỉ lấy hàng: </h6>
+                        <div class="col-md-4 row mb-3">
+                          <label for="fullName" class="col-sm-4 col-form-label">Người nhận</label>
+                          <div class="col-sm-8">
+                            <input type="text" class="form-control editable" id="fullName" name="fullName">
+                          </div>
+                        </div>
+                        <div class="col-md-4 row mb-3">
+                          <label for="orderDelivery" class="col-sm-4 col-form-label">Mã vận đơn</label>
+                          <div class="col-sm-8">
+                            <input type="text" class="form-control" id="orderDelivery" readonly>
+                          </div>
+                        </div>
+                        <div class="col-md-4 row mb-3">
+                          <label for="shippingUnit" class="col-sm-4 col-form-label">Đơn vị GH</label>
+                          <div class="col-sm-8">
+                            <input type="text" class="form-control" id="shippingUnit" readonly name="shippingUnit">
+                          </div>
+                        </div>
+                        <div class="col-md-4 row mb-3">
+                          <label for="phoneNumber" class="col-sm-4 col-form-label">Số điện thoại</label>
+                          <div class="col-sm-8">
+                            <input type="text" class="form-control editable" id="phoneNumber" name="phoneNumber">
+                          </div>
+                        </div>
+                        <div class="col-md-4 row mb-3">
+                          <label for="address" class="col-sm-4 col-form-label">Địa chỉ</label>
+                          <div class="col-sm-8">
+                            <input type="text" class="form-control editable" id="address" name="address">
+                          </div>
+                        </div>
+                        <div class="col-md-4 row mb-3">
+                          <label for="shippingStatus" class="col-sm-4 col-form-label">Trạng thái GH</label>
+                          <div class="col-sm-8">
+                            <input type="text" class="form-control" id="shippingStatus" readonly>
+                          </div>
+                        </div>
+                        <div class="col-md-4 row mb-3">
+                          <label for="provinceName" class="col-sm-4 col-form-label">Tỉnh/TP</label>
+                          <div class="col-sm-8 input-group">
+                            <input type="text" class="form-control" id="provinceName" name="provinceName" readonly>
+                            <input type="hidden" class="form-control" id="province" name="province">
+                            <button type="button" class="btn btn-info button-editable" data-bs-toggle="modal" data-bs-target="#provinceModal" ><i class="bi bi-pencil-square"></i></button>
+                          </div>
+                        </div>
+                        <div class="col-md-4 row mb-3">
+                          <label for="districtName" class="col-sm-4 col-form-label">Quận/huyện</label>
+                          <div class="col-sm-8 input-group">
+                            <input type="text" class="form-control" id="districtName" name="districtName" readonly>
+                            <input type="hidden" class="form-control" id="district" name="district">
+                            <button type="button" class="btn btn-info button-editable" data-bs-toggle="modal" data-bs-target="#districtModal" ><i class="bi bi-pencil-square"></i></button>
+                          </div>
+                        </div>
+                        <div class="col-md-4 row mb-3">
+                          <label for="communeName" class="col-sm-4 col-form-label">Xã/phường</label>
+                          <div class="col-sm-8 input-group">
+                            <input type="text" class="form-control" id="communeName" name="communeName" readonly>
+                            <input type="hidden" class="form-control" id="commune" name="commune">
+                            <button type="button" class="btn btn-info button-editable" data-bs-toggle="modal" data-bs-target="#communeModal" ><i class="bi bi-pencil-square"></i></button>
+                          </div>
+                        </div>
+                        <div class="col-md-4 row mb-3">
+                          <label for="fee" class="col-sm-4 col-form-label">Cước phí</label>
+                          <div class="col-sm-8">
+                            <input type="text" class="form-control" id="fee" name="fee" readonly>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="text-center">
+                  <button type="button" class="btn btn-outline-dark" onclick="location.href='/manage/transaction/order'">Quay lại</button>
+                  <button type="button" class="btn btn-primary editable" onclick="create()" >Tạo đơn</button>
+                </div>
+              </form>
+
+            </div>
+            <div class="tab-pane fade" id="bordered-profile" role="tabpanel" aria-labelledby="profile-tab">
+              Nesciunt totam et. Consequuntur magnam aliquid eos nulla dolor iure eos quia. Accusantium distinctio omnis et atque fugiat. Itaque doloremque aliquid sint quasi quia distinctio similique. Voluptate nihil recusandae mollitia dolores. Ut laboriosam voluptatum dicta.
+            </div>
+          </div><!-- End Bordered Tabs -->
+          <div class="modal fade" id="provinceModal" tabindex="-1" style="display: none;" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Vertically Centered</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <p>Lựa chọn vị trí: </p>
+                  <select class="form-select" id="provinceData">
+                  </select>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Thoát</button>
+                  <button type="button" class="btn btn-primary" onclick="changeProvince()" data-bs-dismiss="modal">Chọn</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal fade" id="districtModal" tabindex="-1" style="display: none;" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Vertically Centered</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <p>Lựa chọn vị trí: </p>
+                  <select class="form-select" id="districtData">
+                  </select>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Thoát</button>
+                  <button type="button" class="btn btn-primary" onclick="changeDistrict()" data-bs-dismiss="modal">Chọn</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal fade" id="communeModal" tabindex="-1" style="display: none;" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Vertically Centered</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <p>Lựa chọn vị trí: </p>
+                  <select class="form-select" id="communeData">
+                  </select>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Thoát</button>
+                  <button type="button" class="btn btn-primary" onclick="changeCommune()" data-bs-dismiss="modal">Chọn</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <th:block th:replace="~{/manage/common/customerModal :: ${customerPopup}}"></th:block>
+        </div>
+      </div>
+    </section>
+  </main>
+</th:block>
+
+
+<th:block id="js-resources">
+  <script th:inline="javascript">
+    let orderFrm = $("#order-create-form");
+
+    /**
+     * Initiate Datatables
+     */
+    let table = new DataTable('#orderDetail', {
+      select: true,
+      searching: false,
+      paging: false,
+      info: false,
+      ordering: false
+    });
+
+    const pageParam = {
+      'formId': 'order-create-form',
+      'dataListUrl': apiDomain + '/api/v1/admin/user/customer',
+      'promotionActiveUrl': apiDomain + '/api/v1/admin/sales-promotion/promotion/active'
+    };
+
+    const popupParam = {
+      'dataListUrl': apiDomain + '/api/v1/admin/user/customer/active'
+    };
+
+    $(document).ready(function() {
+      fetchProvinces();
+      loadDataPopupTable(1);
+      loadDataSelect("promotion", pageParam.promotionActiveUrl, '0', "Lựa Chọn Mã giảm giá","");
+
+      $("#product-select").select2({
+        ajax: {
+          url: apiDomain + '/api/v1/admin/merchandise/product',
+          dataType: 'json',
+          delay: 250,
+          xhrFields: { withCredentials: true },
+          data: function (params) {
+            return {
+              query: params.term, // search term
+              pageNo: params.page
+            };
+          },
+          processResults: function (data, params) {
+            // parse the results into the format expected by Select2
+            // since we are using custom formatting functions we do not need to
+            // alter the remote JSON data, except to indicate that infinite
+            // scrolling can be used
+            params.page = params.page || 1;
+            return {
+              results: $.map(data.data, function (item) {
+                return {
+                  text: item.name,
+                  id: item.id,
+                  price: item.price
+                }
+              }),
+              pagination: {
+                more: (params.page * 30) < data.total
+              }
+            };
+          },
+          cache: true
+        },
+        placeholder: 'Lựa chọn sản phẩm',
+        minimumInputLength: 0,
+        tag: true,
+        templateResult: formatState
+      });
+
+      $('#product-select').on('select2:select', function (e) {
+        let data = e.params.data;
+        $('#productId').val(data.id);
+        $('#productPrice').val(data.price);
+        $('#productName').val(data.text);
+      });
+
+      $('#orderDetail tbody').on('click', 'tr', function () {
+        $current = table.row( this )
+        let data = $current.data();
+        $('#productId').val(data[0]);
+        $('#productName').val(data[1]);
+        $('#productType').val(data[2]);
+        $('#quantity').val(data[4]);
+        $('#order-detail-row').val($current.index());
+        let option = new Option(data[1], data[0], true, true);
+        $('#product-select').empty().append(option).trigger('change');
+        $('#save-order-detail').html('Lưu thay đổi');
+      } );
+
+      $('#discountPrice').on('blur', function () {
+        setCost();
+      })
+
+      $('#fullName').on('blur', function () {
+        setCustomer();
+      })
+
+      $('#phoneNumber').on('blur', function () {
+        setCustomer();
+      })
+    });
+
+    function formatState (state) {
+      if (!state.id) {
+        return state.text;
+      }
+      let $state = $(
+              '<span>' + state.id + '</span> - <span>' + state.text + '</span>'
+      );
+      return $state;
+    };
+
+    orderFrm.validate({
+      invalidHandler: function(form, validator) {
+        let errors = validator.numberOfInvalids();
+        if (errors) {
+          validator.errorList[0].element.focus();
+        }
+      },
+      highlight: function(element, errorClass) {
+        $(element).removeClass(errorClass);
+      },
+      rules: {
+        paymentType: "required",
+        discountPrice: 'number',
+        fullName: "required",
+        phoneNumber: "required",
+        address: "required",
+        province: "required",
+        district: "required",
+        commune: "required"
+      },
+      messages: {
+        paymentType: "Vui lòng chọn phương thức thanh toán!",
+        discountPrice: 'Tiền giảm giá phải là số!',
+        fullName: "Vui lòng nhập tên!",
+        phoneNumber: "Vui lòng nhập số điện thoại!",
+        address: "Nhập thông tin địa chỉ!",
+        province: "Nhập thông tỉnh/thành",
+        district: "Nhập thông tin quận/huyện",
+        commune: "Nhập thông tin phường/xã"
+      }
+    });
+
+    function addRow() {
+      let id = $('#productId').val();
+      let quantity = $('#quantity').val();
+      if (id === '' || id === null) {
+        return;
+      }
+      let price = $("#productPrice").val();
+      let totalItem = price * quantity;
+
+      let newRow = [
+        id,
+        $('#productName').val(),
+        $('#productType').val(),
+        price,
+        quantity,
+        totalItem,
+        '<div class="d-flex justify-content-center"><button type="button" class="btn btn-danger" onclick="removeRow(this)"><i class="bi bi-bag-dash"></i></button></div>'
+      ];
+
+      let rowIndex = $('#order-detail-row').val();
+      if (rowIndex >= 0) {
+        table.row(rowIndex).data(newRow).draw();
+        $('#order-detail-row').val(-1)
+      } else {
+        table.row.add(newRow).draw();
+      }
+      clear();
+      setPrice();
+    }
+
+    function setPrice(){
+      let price = table
+              .column(5)
+              .data()
+              .reduce(function (a, b) {
+                return a + b;
+              });
+
+      $('#price').val(price);
+
+      setCost();
+    }
+
+    function setCost() {
+      let price = $('#price').val();
+      let discountPrice = $('#discountPrice').val();
+      let promotionValue = $("#promotion option:selected").attr("attr-value");
+      if (Number(price) >= (Number(discountPrice) + Number(promotionValue))) {
+        $('#cost').val(Number(price) - (Number(discountPrice) + Number(promotionValue)));
+      }
+    }
+
+    function setCustomer() {
+      let name = $('#fullName').val();
+      let phone = $('#phoneNumber').val();
+      $('#customerDisplay').val('Anh/chị: ' + name + " - SĐT: " + phone)
+    }
+
+    function clear() {
+      $('#productId').val('');
+      $('#productName').val('');
+      $('#productType').val('');
+      $('#quantity').val(1);
+      $('#order-detail-row').val(-1);
+      $('#save-order-detail').html('Thêm sản phẩm');
+      $('#product-select').empty();
+    }
+
+    function removeRow(e) {
+      $row = e.closest('tr');
+      table.row($row).remove().draw();
+      setPrice();
+    }
+
+    function changeProvince() {
+      let province = $("#provinceData option:selected");
+      $("input[name='province']").val(province.val());
+      $("input[name='provinceName']").val(province.text());
+      fetchDistricts(province.val());
+      $("input[name='district']").val('');
+      $("input[name='districtName']").val('');
+      $("input[name='commune']").val('');
+      $("input[name='communeName']").val('');
+    }
+
+    function changeDistrict() {
+      let district = $("#districtData option:selected");
+      $("input[name='district']").val(district.val());
+      $("input[name='districtName']").val(district.text());
+      $("input[name='commune']").val('');
+      $("input[name='communeName']").val('');
+      fetchCommune(district.val());
+    }
+
+    function changeCommune() {
+      let commune = $("#communeData option:selected");
+      $("input[name='commune']").val(commune.val());
+      $("input[name='communeName']").val(commune.text());
+    }
+
+    function create(){
+      if(orderFrm.valid() && validateArea()){
+        let object = {};
+        let shipping = document.forms["order-create-form"];
+        let form = new FormData(shipping);
+        form.forEach((value, key) => object[key] = value);
+        let data = $('#orderDetail').DataTable().rows().data().toArray();
+        let items = [];
+        if (data.length > 0) {
+          for (let i = 0; i < data.length; i++) {
+
+            let obj = {};
+            obj['productId'] = data[i][0];
+            obj['quantity'] = data[i][4];
+            items.push(obj);
+          }
+        }
+
+        object['items'] = items;
+
+        let res = ajaxCall(apiDomain + '/api/v1/admin/order', object, 'post');
+        if(res.status === "success") {
+          showToast("Đơn đã được tạo thành công", 'success', 8000);
+          location.href = '/admin/transaction/order';
+        } else {
+          ftErrorAlert(res.msg)
+        }
+      }
+    }
+
+
+    function validateArea() {
+      let district = $("input[name='district']").val();
+      let commune = $("input[name='commune']").val();
+      if (district === '') {
+        ftErrorAlert('Vui lòng nhập thông tin huyện!');
+        return false;
+      }
+
+      if (commune === '') {
+        ftErrorAlert('Vui lòng nhập thông tin xã!');
+        return false;
+      }
+
+      return true;
+    }
+
+    function fetchProvinces(){
+      let $areaData = $('#provinceData');
+      let result = ajaxCall(apiDomain + '/api/v1/public/area/getAllProvince','','get');
+      if(result.status=="success"){
+        let listOption = '';
+        result.data.forEach((item, index) => {
+          listOption += `<option value="${item.id}" >${item.value}</option>`
+        });
+        $areaData.attr('data-area', 'province');
+        $areaData.html(listOption);            }
+    }
+
+    function fetchDistricts(provinceId){
+      let $areaData = $('#districtData');
+      let result = ajaxCall(apiDomain + '/api/v1/public/area/getAllDistrict?provinceId=' + provinceId,'','get');
+      if(result.status=="success"){
+        let listOption = '';
+        result.data.forEach((item, index) => {
+          listOption += `<option value="${item.id}" >${item.value}</option>`
+        });
+        $areaData.html(listOption);
+      }
+    }
+
+    function fetchCommune(district){
+      let $areaData = $('#communeData');
+      let result = ajaxCall(apiDomain + '/api/v1/public/area/getAllCommune?districtId=' + district,'','get');
+      if(result.status=="success"){
+        let listOption = '';
+        result.data.forEach((item, index) => {
+          listOption += `<option value="${item.id}" >${item.value}</option>`
+        });
+        $areaData.html(listOption);
+      }
+    }
+
+    function getDataTable(data){
+      let listData ='';
+      data.forEach((element, index) => {
+        let checkBox = '<input name="ids" class="check-box-remove form-check-input" type="checkbox" value="'+element.id+'">';
+        listData += '<tr>' +
+                '                  <th><input name="selectId" class="check-box-remove form-check-input" type="radio" value="'+element.id+'" data-name="' + element.fullName + '" data-address="' + element.address + '" data-province=" ' + element.province + '"' +
+                '                    data-phone-number="' + element.phoneNumber  + ' "' +
+                ' data-district="' + element.district + '" data-commune="' + element.commune + '" data-provinceName="' + element.provinceName + '" data-districtName="' + element.districtName + '" data-communeName="' + element.communeName + '"></th>' +
+                '                  <th scope="row">'+rowOrder(index)+'</th>' +
+                '                  <td>'+element.fullName+'</td>' +
+                '                  <td>'+element.phoneNumber+'</td>' +
+                '                  <td>'+element.address+'</td>' +
+                '                </tr>';
+      });
+      return listData;
+    }
+
+    function searchCustomer() {
+      loadDataPopupTable(1);
+    }
+    
+    function selectCustomer() {
+      let $selectedId = $("input[name='selectId']:checked");
+      if ($selectedId === undefined) {
+        return;
+      }
+      $('#customerDisplay').val('Anh/chị: ' + $selectedId.attr('data-name') + ' - SĐT: ' + $selectedId.attr('data-phone-number'))
+      $("input[name='customerId']").val($selectedId.attr('data-phone-number'));
+      $("input[name='fullName']").val($selectedId.attr('data-name'));
+      $("input[name='phoneNumber']").val($selectedId.attr('data-phone-number'));
+      $("input[name='province']").val($selectedId.attr('data-province'));
+      $("input[name='district']").val($selectedId.attr('data-district'));
+      $("input[name='commune']").val($selectedId.attr('data-commune'));
+      $("input[name='provinceName']").val($selectedId.attr('data-provinceName'));
+      $("input[name='districtName']").val($selectedId.attr('data-districtName'));
+      $("input[name='communeName']").val($selectedId.attr('data-communeName'));
+      $("input[name='address']").val($selectedId.attr('data-address'));
+      $('#customer-popup').modal('hide');
+    }
+    function loadDataSelect(select, url, focus, name, search) {
+      let param = 'enabledPage=false' + '&' + search;
+      let res = ajaxCall(url, param, 'GET');
+      if (res.status === 'success') {
+        $('#' + select).empty();
+        res.data.forEach((object) => {
+          if (focus === object.id) {
+            $('#' + select).append('<option value="' + object.id +'" attr-value = ' + object.value + ' selected>' + object.name + '</option>');
+          } else {
+            $('#' + select).append('<option value="' + object.id +'" attr-value = ' + object.value + ' >' + object.name + '</option>');
+          }
+        });
+      } else {
+        alert(res.msg);
+      }
+      if (focus === '0' || !focus) {
+        $('#' + select).append('<option selected="" value= "" attr-value = 0>' + name + '</option>');
+      }
+    }
+  </script>
+</th:block>
+</body>
+</html>

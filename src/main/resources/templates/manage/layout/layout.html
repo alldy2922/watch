@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:fragment="main-fragment(title,cssResources, jsResources, mainContent)">
+<head>
+  <meta charset="UTF-8">
+  <title th:replace="${title}"></title>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.gstatic.com" rel="preconnect">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+  <!-- Thêm thư viện Firebase -->
+
+  <!-- TODO: Add SDKs for Firebase products that you want to use -->
+  <!-- https://firebase.google.com/docs/web/setup#available-libraries -->
+
+  <!-- Vendor CSS Files -->
+  <link th:href="@{/manage/assets/vendor/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
+  <link th:href="@{/manage/assets/vendor/bootstrap-icons/bootstrap-icons.css}" rel="stylesheet">
+  <link th:href="@{/manage/assets/vendor/boxicons/css/boxicons.min.css}" rel="stylesheet">
+  <link th:href="@{/manage/assets/vendor/quill/quill.snow.css}" rel="stylesheet">
+  <link th:href="@{/manage/assets/vendor/quill/quill.bubble.css}" rel="stylesheet">
+  <link th:href="@{/manage/assets/vendor/remixicon/remixicon.css}" rel="stylesheet">
+  <link href="https://cdn.datatables.net/2.0.2/css/dataTables.dataTables.min.css" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link th:href="@{/manage/assets/vendor/simple-datatables/style.css}" rel="stylesheet">
+
+
+  <!-- Template Main CSS File -->
+  <link th:href="@{/manage/assets/css/common.css}" rel="stylesheet">
+  <link th:href="@{/manage/assets/css/style.css}" rel="stylesheet">
+  <link th:href="@{/manage/assets/css/notification.css}" rel="stylesheet">
+
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+  <!-- Main CSS-->
+  <th:block th:replace="${cssResources} ?: ~{}"></th:block>
+
+</head>
+<body th:with="isLayout=${typeLayout} ? ${typeLayout} : true">
+
+<!--HEADER-->
+<th:block th:if="${isLayout == true}">
+  <th:block  th:replace="~{manage/fragments/header :: ${header}}"></th:block>
+</th:block>
+
+<!-- MENU -->
+<th:block th:if="${isLayout == true}">
+  <th:block th:replace="~{manage/fragments/menu :: ${menu}}"></th:block>
+</th:block>
+<!--<th:block th:replace="/manage/common/toast"></th:block>-->
+<!--<th:block th:replace="/manage/common/alert"></th:block>-->
+<!--<th:block th:replace="/manage/common/errorModal"></th:block>-->
+<!-- BODY -->
+<th:block th:replace="${mainContent} ?: ~{}"></th:block>
+<!--FOOTER-->
+<th:block th:if="${isLayout == true}">
+  <th:block th:replace="~{manage/fragments/footer :: ${footer}}"></th:block>
+</th:block>
+
+
+<!-- Vendor JS Files -->
+<script th:src="@{/manage/assets/vendor/apexcharts/apexcharts.min.js}"></script>
+<script th:src="@{/manage/assets/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/manage/assets/vendor/chart.js/chart.umd.js}"></script>
+<script th:src="@{/manage/assets/vendor/echarts/echarts.min.js}"></script>
+<script th:src="@{/manage/assets/vendor/quill/quill.min.js}"></script>
+<script th:src="@{/manage/assets/vendor/tinymce/tinymce.min.js}"></script>
+<script th:src="@{/manage/assets/vendor/php-email-form/validate.js}"></script>
+
+<script th:src="@{/manage/assets/vendor/choisejs/http_cdn.jsdelivr.net_npm_choices.js_10.2.0_public_assets_scripts_choices.js}"></script>
+<link th:href="@{/manage/assets/vendor/choisejs/http_cdn.jsdelivr.net_npm_choices.js_10.2.0_public_assets_styles_choices.css}" rel="stylesheet">
+
+<!-- Template Main JS File -->
+<script th:src="@{/manage/assets/js/main.js}"></script>
+
+<!--jquery-->
+<script th:src="@{/js/jquery-3.7.1.min.js}"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script th:src="@{https://cdn.datatables.net/2.0.2/js/dataTables.min.js}"></script>
+
+<!--Common-->
+<script th:src="@{/manage/js/common.js}"></script>
+<script th:src="@{/manage/js/ApiConstant.js}"></script>
+<script th:src="@{/js/data.common.js}"></script>
+<script th:src="@{/js/ft.common.js}"></script>
+
+<!-- jquery validate -->
+<script th:src="@{/js/jquery.validate.js}"></script>
+
+
+
+
+<script th:inline="javascript">
+  const apiDomain = [[${@environment.getProperty('app.api-domain')}]];
+</script>
+
+<!--<script th:src="@{/manage/js/config/notification.js}"></script>-->
+
+<!--Main js-->
+<th:block th:replace="${jsResources} ?: ~{}"></th:block>
+
+</body>
+</html>

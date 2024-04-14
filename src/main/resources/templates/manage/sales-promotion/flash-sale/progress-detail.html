@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{manage/layout/layout :: main-fragment(
+                                                ~{:: title},
+                                                ~{:: #css-resources},
+                                                ~{:: #js-resources},
+                                                ~{:: #main-content}
+                                               )}">
+<head>
+    <meta charset="UTF-8">
+    <title>Xem chi tiết</title>
+
+    <th:block id="css-resources">
+    </th:block>
+</head>
+<body>
+<th:block id="main-content">
+    <main id="main" class="main">
+
+        <div class="page-title">
+            <h1>Xem chi tiết</h1>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="list.html">Chi tiết</a></li>
+                <li class="breadcrumb-item active"><a href="progress-detail.html"></a>Tạo mới</li>
+            </ol>
+        </div>
+
+        <section class="section">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <br>
+
+                            <div class="datatable-top">
+                                <div class="common-search">
+                                    <div class="search-bar">
+                                        <form class="search-form d-flex align-items-center" method="get" action="#"
+                                              id="frm">
+                                            <input type="number" id="idFlashSale" name="idFlashSale"
+                                                   placeholder="Theo tên Flash Sale" title="Enter search keyword" hidden="hidden">
+                                            <input type="text" id="hasProductName" name="hasProductName"
+                                                   placeholder="" title="" hidden="hidden">
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <table class="table table-striped">
+                                <thead>
+                                <tr>
+                                    <th scope="col">Sản Phẩm</th>
+                                    <th scope="col">Giá khuyễn mãi</th>
+                                    <th scope="col">Số lượng bán</th>
+                                    <th scope="col">Số lượng đã bán</th>
+                                    <th scope="col">Chi tiết</th>
+                                </tr>
+                                </thead>
+                                <tbody id="data-table">
+                                </tbody>
+                            </table>
+                            <!-- End Table with stripped rows -->
+                            <th:block th:replace="~{manage/fragments/pagination :: ${pagination}}"></th:block>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+</th:block>
+<th:block id="js-resources">
+    <script th:inline="javascript">
+        const id = [[${id}]];
+        $(document).ready(function () {
+            $('#idFlashSale').val(id);
+            $('#hasProductName').val(true);
+            loadDataTable(1);
+        });
+        const pageParam = {
+            'formId': 'frm',
+            'dataListUrl': apiDomain + API.getSalesProductFlashSaleUrl()
+        };
+        function getDataTable(data) {
+            let listData = '';
+            data.forEach((element) => {
+                listData += '<tr>' +
+                    '                  <td>' + element.productName + '</td>' +
+                    '                  <td>' + element.discountPrice + '</td>' +
+                    '                  <td>' + element.sellQuantity + '</td>' +
+                    '                  <td>' + element.sellQuantity + '</td>' +
+                    '                  <td><i class="bi bi-eye" style="cursor: pointer" onclick="detailPage(' + element.id + "" + ')"></i></td>' +
+                    '                </tr>'
+
+            });
+            return listData;
+        }
+    </script>
+</th:block>
+</body>
+</html>

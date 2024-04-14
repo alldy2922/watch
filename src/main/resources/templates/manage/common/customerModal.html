@@ -1,0 +1,49 @@
+<th:block th:fragment="customerPopup">
+    <div class="modal fade" id="customer-popup" tabindex="-1" style="display: none;" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Danh sách khách hàng</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Lựa chọn vị trí: </p>
+                    <div class="datatable-wrapper datatable-loading no-footer sortable searchable fixed-columns">
+                        <div class="datatable-top">
+                            <form class="datatable-search row" id="popup-search" method="GET">
+                                <div class="col-md-4">
+                                    <input class="datatable-input form-control" placeholder="Search..." type="search" name="search"
+                                           title="Search within table">
+                                </div>
+                                <div class="col-md-2">
+                                    <button type="button" onclick="searchCustomer()" class="btn btn-primary">Tìm kiếm</button>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="datatable-container">
+                            <table class="table datatable datatable-table">
+                                <thead>
+                                <tr>
+                                    <th scope="row">
+                                    </th>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Tên khách hàng</th>
+                                    <th scope="col">Điện thoại</th>
+                                    <th scope="col">Địa chỉ</th>
+                                </tr>
+                                </thead>
+                                <tbody id="data-table">
+                                </tbody>
+                            </table>
+                        </div>
+                        <th:block th:replace="~{/manage/fragments/popupPagination :: ${pagination}}"></th:block>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="selectCustomer()">Lựa chọn</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>

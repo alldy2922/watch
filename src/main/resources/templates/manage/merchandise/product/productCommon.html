@@ -1,0 +1,103 @@
+<th:block th:fragment="productCommon">
+
+    <script th:inline="javascript">
+        let index = 1;
+        let brandIndex = 1;
+
+        function getCategories(index){
+            return `<div class="row mb-2" id="category-item-${index}">
+                    <label class="col-sm-3 col-form-label"></label>
+                    <div class="col-sm-9">
+                      <div class="row">
+                        <div class="col-sm-9">
+                          <select class="form-select" name="categories" id="list-category-${index}" aria-label="">
+                          </select>
+                        </div>
+                            <div class="col-sm-2">
+                          <i style="font-size: 25px; cursor: pointer" class="bi bi-plus-circle" onclick="addCategory()"></i>
+                          <i style="font-size: 25px; cursor: pointer" class="bi bi-dash-circle" onclick="deleteCategory('#category-item-${index}')"></i>
+                        </div>
+                      </div>
+                     </div>
+               </div>`;
+        }
+        function getBrands(index){
+            return `<div class="row mb-2" id="brand-item-${index}">
+                    <label class="col-sm-3 col-form-label"></label>
+                    <div class="col-sm-9">
+                      <div class="row">
+                        <div class="col-sm-9">
+                          <select class="form-select" name="brand" id="list-brand-${index}" aria-label="">
+                          </select>
+                        </div>
+                        <div class="col-sm-2">
+                          <i style="font-size: 25px; cursor: pointer" class="bi bi-plus-circle" onclick="addBrand()"></i>
+                          <i style="font-size: 25px; cursor: pointer" class="bi bi-dash-circle" onclick="deleteBrand('#brand-item-${index}')"></i>
+                        </div>
+                      </div>
+                     </div>
+               </div>`;
+        }
+        function addCategory(value){
+            $('#listCategory').append(getCategories(index));
+            loadDataSelect('list-category-'+index, pageParam.getCategories, '0', "Danh mục");
+            if(value){
+                $('#list-category-'+index).val(value).change();
+            }
+            index ++;
+        }
+        function addBrand(value){
+            $('#listBrand').append(getBrands(brandIndex));
+            loadDataSelect('list-brand-'+brandIndex, pageParam.getBrands, '0', "Nhãn hàng");
+            if(value){
+                $('#list-brand-'+brandIndex).val(value).change();
+            }
+            brandIndex ++;
+        }
+        function deleteCategory(id){
+            $(id).remove();
+        }
+        function deleteBrand(id){
+            $(id).remove();
+        }
+        function loadDataSelect(select, url, focus, name) {
+            let param = 'enabledPage=false&status=1';
+            let res = ajaxCall(url, param, 'GET');
+            if (res.status === 'success') {
+                res.data.forEach((object) => {
+                    if (focus === object.id) {
+                        $('#' + select).append('<option value=' + object.id + ' selected>' + object.name + '</option>');
+                    } else {
+                        $('#' + select).append('<option value=' + object.id + '>' + object.name + '</option>');
+                    }
+                });
+            } else {
+                alert(res.msg);
+            }
+            if (focus + '' === '0') {
+                $('#' + select).append('<option value=' + 0 + ' selected>' + name + '</option>');
+            }
+
+        }
+        function buildJson(name){
+            let json = {};
+            switch(name) {
+                case 'IMAGE':
+                    json = buildJsonImage();
+                    break;
+                case 'ATTRIBUTES':
+                    json = buildJsonAttributes();
+                    break;
+                default:
+            }
+            return json;
+        }
+        function buildJsonImage(){
+            return getJsonByForm('image', 'listImage', false, false, false, false, true);
+        }
+        function buildJsonAttributes(){
+            return getJsonByForm('attributes', 'listAttributes', false, false, false, false, true);
+        }
+    </script>
+
+</th:block>

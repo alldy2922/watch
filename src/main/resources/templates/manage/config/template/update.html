@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml"
+      th:replace="~{manage/layout/layout :: main-fragment(
+                                                ~{:: title},
+                                                ~{:: #css-resources},
+                                                ~{:: #js-resources},
+                                                ~{:: #main-content}
+                                               )}">
+<head>
+  <meta charset="UTF-8">
+  <title>Cập nhật template</title>
+
+  <th:block id="css-resources">
+    <style>
+
+    </style>
+  </th:block>
+
+</head>
+<body>
+<th:block id="main-content">
+  <main id="main" class="main">
+
+    <div class="pagetitle">
+      <h1>Cập nhật template</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="/admin/config/template">Template</a></li>
+          <li class="breadcrumb-item active"><a href="/admin/config/template/update"></a>Cập nhật</li>
+        </ol>
+      </nav>
+    </div><!-- End Page Title -->
+
+    <section class="section">
+      <div class="row">
+        <div class="col-lg-12">
+
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title"></h5>
+
+              <!-- General Form Elements -->
+              <form id="form-template">
+                <input type="hidden" name="id" id="id-template">
+                <div class="row mb-3">
+                  <label class="col-sm-2 col-form-label">Tên template</label>
+                  <div class="col-sm-9">
+                    <input type="text" id="templateName" name="templateName" class="form-control" required>
+                    <div class="invalid-feedback">Vui lòng nhập tên.</div>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <label class="col-sm-2 col-form-label">Html admin</label>
+                  <div class="col-sm-9">
+                    <input id="file-content-admin" name="htmlAdmin" type="hidden"/>
+                    <input id="htmlAdmin" class="form-control" type="file" accept=".html" onchange="addContentFile(this,'file-content-admin')">
+                    <div class="invalid-feedback">Vui lòng chọn file.</div>
+                  </div>
+                  <div class="col-sm-1">
+                    <div><i id="admin-download" style="font-size: 25px; cursor: pointer" class="bi bi-download"></i></div>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <label class="col-sm-2 col-form-label">Html home page</label>
+                  <div class="col-sm-9">
+                    <input id="file-content-user" name="htmlUser" type="hidden"/>
+                    <input class="form-control" type="file" accept=".html" onchange="addContentFile(this,'file-content-user')">
+                    <div class="invalid-feedback">Vui lòng chọn file.</div>
+                  </div>
+                    <div class="col-sm-1">
+                        <div><i id="user-download" style="font-size: 25px; cursor: pointer" class="bi bi-download"></i></div>
+                    </div>
+                </div>
+
+                <!--Image-->
+                <div class="row mb-3">
+                  <label class="col-sm-2 col-form-label">Hình ảnh</label>
+                  <div class="col-sm-4">
+                    <input type="hidden" name="imgPreviewOld" id="imgPreviewOld">
+                    <div id="image-preview" class="img-fluid" style="position:relative; display: none">
+                    </div>
+                    <label style="cursor: pointer" for="image-html"><i style="font-size: 25px;" class="bi bi-upload"></i></label>
+                    <input name="fileImage" id="image-html" type="file" accept="image/*" style="display: none" onchange="showImgPreview('image-preview','image-html',this)">
+                  </div>
+                </div>
+
+                <div class="row mb-3">
+                  <label class="col-sm-2 col-form-label">Trạng thái</label>
+                  <div class="col-sm-9">
+                    <select id="status" class="form-select" name="status" aria-label="Default select example">
+                      <option selected="" value="1">Sử dụng</option>
+                      <option value="0">Không sử dụng</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="row mb-3" sec:authorize="hasRole('TEMPLATE_E')">
+                  <label class="col-sm-2 col-form-label"></label>
+                  <div class="col-sm-9">
+                    <button type="submit" class="btn btn-primary">Cập nhật</button>
+                    <button type="button" class="btn btn-danger" onclick="cancel('/admin/config/template')">Hủy</button>
+                  </div>
+                </div>
+
+              </form>
+              <!-- End General Form Elements -->
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+</th:block>
+
+<th:block id="js-resources">
+  <script th:inline="javascript">
+    const id = [[${id}]];
+
+    $("#form-template").validate({
+      invalidHandler: function(form, validator) {
+        let errors = validator.numberOfInvalids();
+        if (errors) {
+          validator.errorList[0].element.focus();
+        }
+      },
+      highlight: function(element, errorClass) {
+        $(element).removeClass(errorClass);
+      },
+      rules: {
+        templateName: "required",
+      },
+      messages: {
+        templateName: "Vui lòng nhập tên",
+      }
+    });
+
+    $( "#form-template" ).on( "submit", function(e) {
+      e.preventDefault();
+      if($("#form-template").valid()) {
+        let form = $('#form-template')[0];
+        let data = new FormData(form);
+        if(!$('#image-html').val() && $('#imgPreviewOld').val() == ''){
+          alert("Vui lòng chọn ảnh");
+          return;
+        }else {
+          if($('#image-html').val()){
+            let fileImage = data.get('fileImage');
+            let urlImg = uploadFile(fileImage);
+            data.set('imgPreview',urlImg);
+          }else{
+            data.set('imgPreview',$('#imgPreviewOld').val());
+          }
+        }
+
+        let res = ajaxCall(apiDomain + '/api/v1/admin/config/template', data, 'put', false);
+        if (res.status == "success") {
+          alert("Cập nhật thành công");
+          $(location).attr('href', '/admin/config/template');
+        }
+      }
+    });
+
+    $(document).ready(function() {
+      let result = ajaxCall(apiDomain + '/api/v1/admin/config/template/'+id,'','get',false);
+      if(result.status=="success") {
+        let res = result.data;
+        addImgByUrl('image-preview',res.imgPreview, 'imgPreviewOld');
+        $("#id-template").val(res.id);
+        $("#templateName").val(res.templateName);
+        $("#htmlAdmin").text(res.templateName + 'admin');
+        let nameFileAdmin = removeAccents(res.templateName).replace(' ', '-') + '-admin.html';
+        $("#admin-download").on("click", function () {
+          download(nameFileAdmin.toLowerCase(), res.htmlAdmin);
+        });
+        let nameFileUser = removeAccents(res.templateName).replace(' ', '-') + '-user.html';
+        $("#user-download").on("click", function () {
+          download(nameFileUser.toLowerCase(), res.htmlUser);
+        });
+        $("#status").val(res.status).change();
+      }
+    });
+
+  </script>
+</th:block>
+</body>
+</html>

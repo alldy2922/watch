@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml"
+      th:replace="~{manage/layout/layout :: main-fragment(
+                                                ~{:: title},
+                                                ~{:: #css-resources},
+                                                ~{:: #js-resources},
+                                                ~{:: #main-content}
+                                               )}">
+<head>
+  <meta charset="UTF-8">
+  <title>Cập nhật page</title>
+
+  <th:block id="css-resources">
+    <style>
+
+    </style>
+  </th:block>
+
+</head>
+<body>
+<th:block id="main-content">
+  <main id="main" class="main">
+
+    <div class="pagetitle">
+      <h1>Cập nhật page</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="/config/page">Page</a></li>
+          <li class="breadcrumb-item active"><a href="/admin/config/page/update"></a>Cập nhật</li>
+        </ol>
+      </nav>
+    </div><!-- End Page Title -->
+
+    <section class="section">
+      <div class="row">
+        <div class="col-lg-12">
+
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title"></h5>
+
+              <!-- General Form Elements -->
+              <form id="form-page">
+                <div class="row mb-3">
+                  <label class="col-sm-2 col-form-label">Tên page</label>
+                  <div class="col-sm-10">
+                    <input type="text" name="pageName" class="form-control" id="page-name">
+                  </div>
+                </div>
+
+                <!--page-->
+                <div id="html-data">
+
+                </div>
+
+                <!--list component-->
+                <div id="listComponent">
+                  <div class="row mt-3 mb-2">
+                    <label class="col-sm-2 col-form-label">Component</label>
+                    <div class="col-sm-10">
+                      <div class="row">
+                        <div class="col-sm-10">
+                          <select class="form-select" name="components" id="list-component" aria-label="Default select example">
+
+                          </select>
+                        </div>
+                        <div class="col-sm-2">
+                          <i style="font-size: 25px; cursor: pointer" class="bi bi-plus-circle" onclick="addComponent()"></i>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row mb-3 mt-3">
+                  <label class="col-sm-2 col-form-label">Trạng thái</label>
+                  <div class="col-sm-10">
+                    <select class="form-select" name="status" aria-label="" id="page-status">
+                      <option selected="" value="1">Sử dụng</option>
+                      <option value="0">Không sử dụng</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="row mb-3" sec:authorize="hasRole('PAGE_E')">
+                  <label class="col-sm-2 col-form-label"></label>
+                  <div class="col-sm-10">
+                    <button type="button" class="btn btn-primary" onclick="save()">Lưu</button>
+                    <button type="button" class="btn btn-danger" onclick="cancel('/admin/config/page')">Hủy</button>
+                  </div>
+                </div>
+
+              </form>
+              <!-- End General Form Elements -->
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+</th:block>
+
+<th:block id="js-resources">
+  <script th:src="@{/manage/js/config/page.js}"></script>
+  <script th:inline="javascript">
+    const id = [[${id}]];
+    let pageType = '';
+
+    $(document).ready(function() {
+      addOptionComponent('list-component');
+      getPageById();
+    });
+
+    function getPageById(){
+      let result = ajaxCall(apiDomain + '/api/v1/admin/config/page/'+id,'','get',false);
+      if(result.status=="success") {
+        let res = result.data;
+        pageType = res.type;
+        $('#page-name').val(res.name);
+        $("#html-data").html(res.htmlData);
+        $("#page-status").val(res.status).change();
+        let components = res.components;
+        if(components.length == 1){
+          $("#list-component").val(components[0]).change();
+        }else{
+          $("#list-component").val(components[0]).change();
+          for(let i = 1; i < components.length; i++){
+            addComponent(components[i]);
+          }
+        }
+      }
+    }
+    function save(){
+      if($("#form-page").valid()){
+        let pageJson = buildJson(pageType);
+        if(!pageJson){
+          return false;
+        }
+        let components = [];
+        $("select[name='components']").each(function() {
+          components.push($(this).find(":selected").val());
+        });
+        let param = {};
+        param['id'] = id;
+        param['name'] = $('#page-name').val();
+        param['type'] = pageType;
+        param['data'] = JSON.stringify(pageJson);
+        param['htmlData'] = $('#html-data').html();
+        param['components'] = components;
+        param['status'] = $("#page-status option:selected").val();
+
+        let res = ajaxCall(apiDomain + '/api/v1/admin/config/page',param,'put');
+        if(res.status=="success") {
+          alert("Cập nhật thành công");
+          $(location).attr('href', '/admin/config/page');
+        }
+
+      }
+
+    }
+
+  </script>
+</th:block>
+</body>
+</html>

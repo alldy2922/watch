@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html"
+      th:replace="~{manage/layout/layout :: main-fragment(
+                                                ~{:: title},
+                                                ~{:: #css-resources},
+                                                ~{:: #js-resources},
+                                                ~{:: #main-content}
+                                               )}">
+<head>
+    <meta charset="UTF-8">
+    <title>Cập nhật đơn hàng</title>
+
+    <th:block id="css-resources">
+        <style>
+        </style>
+    </th:block>
+
+</head>
+<body>
+<th:block id="main-content">
+    <main id="main" class="main">
+
+        <div class="pagetitle">
+            <h1>Cập nhật đơn hàng</h1>
+            <nav>
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/admin/transaction/order/">Đơn hàng</a></li>
+                    <li class="breadcrumb-item active"><a href="/admin/transaction/order/update"></a>Cập nhật</li>
+                </ol>
+            </nav>
+        </div><!-- End Page Title -->
+
+        <section class="section">
+
+            <div class="card">
+                <div class="card-body" style="padding-top: 20px">
+                    <ul class="nav nav-tabs nav-tabs-bordered" id="borderedTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#bordered-home" type="button" role="tab" aria-controls="home" aria-selected="true">Thông tin hoá đơn </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#bordered-profile" type="button" role="tab" aria-controls="profile" aria-selected="false" tabindex="-1">Vận đơn</button>
+                        </li>
+                    </ul>
+                    <div class="tab-content pt-2" id="borderedTabContent">
+                        <div class="tab-pane fade active show" id="bordered-home" role="tabpanel" aria-labelledby="home-tab">
+                            <form id="order-update-form" class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="orderId" class="form-label">Mã hoá đơn</label>
+                                    <input type="text" class="form-control" id="orderId" name="id" readonly>
+                                </div>
+                                <div class="col-md-6 d-flex flex-column">
+                                    <label for="status" class="form-label">Trạng thái</label>
+                                    <div style="height: 100%;">
+                                        <span id="status" style="cursor: pointer; height: 65%" class="badge rounded-pill " >Trạng thái</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="dayReception" class="form-label">Thời gian</label>
+                                    <input readonly type="datetime-local" class="form-control" id="dayReception">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="createdBy" class="form-label">Người tạo </label>
+                                    <input type="text" class="form-control" id="createdBy" name="createdBy" readonly>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="customerDisplay" class="form-label">Khách hàng</label>
+                                    <input type="hidden" class="form-control" name="customerId" >
+                                    <input type="text" readonly class="form-control" id="customerDisplay" >
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="marketPlace" class="form-label">Kênh bán</label>
+                                    <select class="form-select" name="marketPlace" id="marketPlace" disabled >
+                                        <option selected="" value="">Lựa chọn kênh bán</option>
+                                        <option value="WEB">Web</option>
+                                        <option value="SHOPEE">Shopee</option>
+                                        <option value="TIKTOK">Tiktok</option>
+                                        <option value="AMAZON">Amazon</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="paymentType" class="form-label">Kiểu thanh toán</label>
+                                    <select class="form-select editable" name="paymentType" id="paymentType" >
+                                        <option selected="" value="">Lựa chọn phương thức thanh toán</option>
+                                        <option value="COD">COD</option>
+                                        <option value="VIETQR">Ck ngân hàng (VietQR)</option>
+                                        <option value="VISA">Visa</option>
+                                        <option value="MOMO">Momo</option>
+                                        <option value="VN_PAY">Vnpay</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 d-flex flex-column-reverse">
+                                    <div class="form-check">
+                                        <input class="form-check-input editable" type="checkbox" name="isPaid" id="isPaid" >
+                                        <label class="form-check-label" for="isPaid">
+                                            Đã thanh toán
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="price" class="form-label">Giá gốc</label>
+                                    <input readonly type="text" class="form-control" id="price" >
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="discountPrice" class="form-label">Giá giảm </label>
+                                    <input type="text" class="form-control editable" id="discountPrice" name="discountPrice">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="promotion" class="form-label">Mã giảm gíá </label>
+<!--                                    <input readonly type="text" class="form-control" id="promotion" name="promotion">-->
+                                    <select class="form-select " name="promotion" id="promotion"
+                                            aria-label="Danh mục cấp độ cao hơn"  onchange="setPrice()">
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="cost" class="form-label">Thành tiền </label>
+                                    <input type="text" class="form-control" id="cost" readonly>
+                                </div>
+                                <div class="col-md-12 accordion" id="accordionExample">
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header" id="headingOne">
+                                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                                Thông tin giao hàng
+                                            </button>
+                                        </h2>
+                                        <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample" style="">
+                                            <div class="accordion-body row">
+                                                <h6 class="mb-4">Địa chỉ lấy hàng: </h6>
+                                                <div class="col-md-4 row mb-3">
+                                                    <label for="fullName" class="col-sm-4 col-form-label">Người nhận</label>
+                                                    <div class="col-sm-8">
+                                                        <input type="text" class="form-control editable" id="fullName" name="fullName">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4 row mb-3">
+                                                    <label for="orderDelivery" class="col-sm-4 col-form-label">Mã vận đơn</label>
+                                                    <div class="col-sm-8">
+                                                        <input type="text" class="form-control" id="orderDelivery" readonly>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4 row mb-3">
+                                                    <label for="shippingUnit" class="col-sm-4 col-form-label">Đơn vị GH</label>
+                                                    <div class="col-sm-8">
+                                                        <input type="text" class="form-control" id="shippingUnit" readonly name="shippingUnit">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4 row mb-3">
+                                                    <label for="phoneNumber" class="col-sm-4 col-form-label">Số điện thoại</label>
+                                                    <div class="col-sm-8">
+                                                        <input type="text" class="form-control editable" id="phoneNumber" name="phoneNumber">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4 row mb-3">
+                                                    <label for="address" class="col-sm-4 col-form-label">Địa chỉ</label>
+                                                    <div class="col-sm-8">
+                                                        <input type="text" class="form-control editable" id="address" name="address">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4 row mb-3">
+                                                    <label for="shippingStatus" class="col-sm-4 col-form-label">Trạng thái GH</label>
+                                                    <div class="col-sm-8">
+                                                        <input type="text" class="form-control" id="shippingStatus" readonly>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4 row mb-3">
+                                                    <label for="provinceName" class="col-sm-4 col-form-label">Tỉnh/TP</label>
+                                                    <div class="col-sm-8 input-group">
+                                                        <input type="text" class="form-control" id="provinceName" name="provinceName" readonly>
+                                                        <input type="hidden" class="form-control" id="province" name="province">
+                                                        <button type="button" class="btn btn-info button-editable" data-bs-toggle="modal" data-bs-target="#provinceModal" ><i class="bi bi-pencil-square"></i></button>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4 row mb-3">
+                                                    <label for="districtName" class="col-sm-4 col-form-label">Quận/huyện</label>
+                                                    <div class="col-sm-8 input-group">
+                                                        <input type="text" class="form-control" id="districtName" name="districtName" readonly>
+                                                        <input type="hidden" class="form-control" id="district" name="district">
+                                                        <button type="button" class="btn btn-info button-editable" data-bs-toggle="modal" data-bs-target="#districtModal" ><i class="bi bi-pencil-square"></i></button>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4 row mb-3">
+                                                    <label for="communeName" class="col-sm-4 col-form-label">Xã/phường</label>
+                                                    <div class="col-sm-8 input-group">
+                                                        <input type="text" class="form-control" id="communeName" name="communeName" readonly>
+                                                        <input type="hidden" class="form-control" id="commune" name="commune">
+                                                        <button type="button" class="btn btn-info button-editable" data-bs-toggle="modal" data-bs-target="#communeModal" ><i class="bi bi-pencil-square"></i></button>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4 row mb-3">
+                                                    <label for="fee" class="col-sm-4 col-form-label">Cước phí</label>
+                                                    <div class="col-sm-8">
+                                                        <input type="text" class="form-control" id="fee" name="fee" readonly>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="text-center">
+                                    <button type="button" class="btn btn-outline-dark" onclick="location.href='/admin/transaction/order'">Quay lại</button>
+                                    <button type="button" class="btn btn-primary editable" onclick="update()" >Lưu thay đổi</button>
+                                    <button type="reset" class="btn btn-success" id="confirmOrder" style="display: none" onclick="confirmPress()">Tiếp nhận đơn</button>
+                                    <button type="reset" class="btn btn-danger" id="rejectOrder" style="display: none" onclick="rejectPress()">Từ chối đơn</button>
+                                </div>
+                            </form>
+
+                        </div>
+                        <div class="tab-pane fade" id="bordered-profile" role="tabpanel" aria-labelledby="profile-tab">
+                            Nesciunt totam et. Consequuntur magnam aliquid eos nulla dolor iure eos quia. Accusantium distinctio omnis et atque fugiat. Itaque doloremque aliquid sint quasi quia distinctio similique. Voluptate nihil recusandae mollitia dolores. Ut laboriosam voluptatum dicta.
+                        </div>
+                    </div><!-- End Bordered Tabs -->
+                        <div class="modal fade" id="provinceModal" tabindex="-1" style="display: none;" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Vertically Centered</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>Lựa chọn vị trí: </p>
+                                        <select class="form-select" id="provinceData">
+                                        </select>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Thoát</button>
+                                        <button type="button" class="btn btn-primary" onclick="changeProvince()" data-bs-dismiss="modal">Chọn</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal fade" id="districtModal" tabindex="-1" style="display: none;" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Vertically Centered</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>Lựa chọn vị trí: </p>
+                                        <select class="form-select" id="districtData">
+                                        </select>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Thoát</button>
+                                        <button type="button" class="btn btn-primary" onclick="changeDistrict()" data-bs-dismiss="modal">Chọn</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal fade" id="communeModal" tabindex="-1" style="display: none;" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Vertically Centered</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>Lựa chọn vị trí: </p>
+                                        <select class="form-select" id="communeData">
+                                        </select>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Thoát</button>
+                                        <button type="button" class="btn btn-primary" onclick="changeCommune()" data-bs-dismiss="modal">Chọn</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+            </div>
+        </section>
+    </main>
+</th:block>
+
+
+<th:block id="js-resources">
+    <script th:inline="javascript">
+        const id = [[${id}]];
+        let orderFrm = $("#order-update-form");
+
+        const pageParam = {
+            'formId': 'order-create-form',
+            'dataListUrl': apiDomain + '/api/v1/admin/user/customer',
+            'promotionActiveUrl': apiDomain + '/api/v1/admin/sales-promotion/promotion/active'
+        };
+        $(document).ready(function() {
+            getDetail();
+            fetchProvinces();
+            loadDataSelect("promotion", pageParam.promotionActiveUrl, '0', "Lựa Chọn Mã giảm giá","");
+        });
+
+        orderFrm.validate({
+            invalidHandler: function(form, validator) {
+                let errors = validator.numberOfInvalids();
+                if (errors) {
+                    validator.errorList[0].element.focus();
+                }
+            },
+            highlight: function(element, errorClass) {
+                $(element).removeClass(errorClass);
+            },
+            rules: {
+                paymentType: "required",
+                discountPrice: 'number',
+                fullName: "required",
+                phoneNumber: "required",
+                address: "required",
+                province: "required",
+                district: "required",
+                commune: "required",
+            },
+            messages: {
+                paymentType: "Vui lòng chọn phương thức thanh toán!",
+                discountPrice: 'Tiền giảm giá phải là số!',
+                fullName: "Vui lòng nhập tên!",
+                phoneNumber: "Vui lòng nhập số điện thoại!",
+                address: "Nhập thông tin địa chỉ!",
+                province: "Nhập thông tỉnh/thành",
+                district: "Nhập thông tin quận/huyện",
+                commune: "Nhập thông tin phường/xã",
+            }
+        });
+
+        function changeProvince() {
+            let province = $("#provinceData option:selected");
+            $("input[name='province']").val(province.val());
+            $("input[name='provinceName']").val(province.text());
+            fetchDistricts(province.val());
+            $("input[name='district']").val('');
+            $("input[name='districtName']").val('');
+            $("input[name='commune']").val('');
+            $("input[name='communeName']").val('');
+        }
+
+        function changeDistrict() {
+            let district = $("#districtData option:selected");
+            $("input[name='district']").val(district.val());
+            $("input[name='districtName']").val(district.text());
+            $("input[name='commune']").val('');
+            $("input[name='communeName']").val('');
+            fetchCommune(district.val());
+        }
+
+        function changeCommune() {
+            let commune = $("#communeData option:selected");
+            $("input[name='commune']").val(commune.val());
+            $("input[name='communeName']").val(commune.text());
+        }
+
+        function update(){
+            if(orderFrm.valid() && validateArea()){
+                let object = {};
+                let shipping = document.forms["order-update-form"];
+                let form = new FormData(shipping);
+                form.forEach((value, key) => object[key] = value);
+                let res = ajaxCall(apiDomain + '/api/v1/admin/order/' + id , object, 'patch');
+                if(res.status === "success") {
+                    showToast("Cập nhật thành công", 'success');
+                } else {
+                    ftErrorAlert(res.msg)
+                }
+            }
+        }
+
+        function cancel() {
+            let res = ajaxCall(apiDomain + '/api/v1/admin/order/' + id , '', 'delete');
+            if(res.status === "success") {
+                showToast("Huỷ đơn thành công", 'success');
+                getDetail();
+            } else {
+                ftErrorAlert(res.msg)
+            }
+        }
+
+        function rejectPress() {
+            ftAlert("Bạn có muốn từ chối đơn này ?", () => {
+                cancel();
+            });
+        }
+
+        function confirm() {
+            let res = ajaxCall(apiDomain + '/api/v1/admin/order/confirm/' + id , '', 'patch');
+            if(res.status === "success") {
+                showToast("Tiếp nhận đơn", 'success');
+                getDetail();
+            } else {
+                ftErrorAlert(res.msg)
+            }
+        }
+
+        function confirmPress() {
+            ftAlert("Bạn có muốn xác nhận đơn này?", () => {
+                confirm();
+            });
+        }
+
+
+        function validateArea() {
+            let district = $("input[name='district']").val();
+            let commune = $("input[name='commune']").val();
+            if (district === '') {
+                ftErrorAlert('Vui lòng nhập thông tin huyện!');
+                return false;
+            }
+
+            if (commune === '') {
+                ftErrorAlert('Vui lòng nhập thông tin xã!');
+                return false;
+            }
+
+            return true;
+        }
+
+        function getDetail(){
+            let result = ajaxCall(apiDomain + '/api/v1/admin/order/detail/'+id,'','get',false);
+            if(result.status=="success") {
+                let res = result.data;
+                let $statusE = $('#status');
+                $("input[name='id']").val(res.id);
+                $("input[name='customerId']").val(res.customerId);
+                $('#price').val(showCurrency(res.price));
+                $("input[name='createdBy']").val(res.createdBy);
+                $("input[name='discountPrice']").val(res.discountPrice);
+                if (res.isPaid) {
+                    $("input[name='isPaid']").prop('checked', 'checked');
+                } else {
+                    $("input[name='isPaid']").removeAttr('checked');
+                }
+                // $("select[name='promotion']").val(res.promotion).change();
+
+                $("select[name='paymentType']").val(res.paymentType).change();
+                $("select[name='marketPlace']").val(res.marketPlace).change();
+                $("input[name='discountPrice']").val(res.discountPrice);
+                $('#dayReception').val(res.dayReception);
+                $("input[name='status']").val(res.status);
+                $('#cost').val(showCurrency(res.cost));
+                let statusClass = getBooleanClassOrderStatus(res.status);
+                let statusName = getBooleanOrderStatus(res.status);
+                $statusE.addClass(statusClass);
+                $statusE.html(statusName);
+
+                if (res.shipping !== null) {
+                    let shipping = res.shipping;
+                    $("input[name='fullName']").val(shipping.fullName);
+                    $("input[name='phoneNumber']").val(shipping.phoneNumber);
+                    $("input[name='province']").val(shipping.province);
+                    $("input[name='district']").val(shipping.district);
+                    $("input[name='commune']").val(shipping.commune);
+                    $("input[name='provinceName']").val(shipping.provinceName);
+                    $("input[name='districtName']").val(shipping.districtName);
+                    $("input[name='communeName']").val(shipping.communeName);
+                    $("input[name='address']").val(shipping.address);
+                    $('#customerDisplay').val('Anh/Chị ' + shipping.fullName + ' - SĐT: ' + shipping.phoneNumber);
+                    if (shipping.province !== null) {
+                        fetchDistricts(shipping.province);
+                    }
+                    if (shipping.commune !== null) {
+                        fetchCommune(shipping.district);
+                    }
+                }
+
+                $('#confirmOrder').hide();
+                $('#rejectOrder').hide();
+
+                if (res.marketPlace !== 'WEB') {
+                    $('.editable').prop('readonly','readonly');
+                    $('select.editable').prop('disabled',true);
+                    $('button.editable').prop('disabled',true);
+                    $('input.editable:checkbox').prop('disabled',true);
+                    $('.button-editable').css("display", "none");
+                } else {
+                    if (res.status === 'CREATE') {
+                        $('#confirmOrder').show();
+                        $('#rejectOrder').show();
+                    }
+                }
+            } else {
+                alert(result.msg);
+            }
+        }
+
+        function fetchProvinces(){
+            let $areaData = $('#provinceData');
+            let result = ajaxCall(apiDomain + '/api/v1/public/area/getAllProvince','','get');
+            if(result.status=="success"){
+                let listOption = '';
+                result.data.forEach((item, index) => {
+                    listOption += `<option value="${item.id}" >${item.value}</option>`
+                });
+                $areaData.attr('data-area', 'province');
+                $areaData.html(listOption);            }
+        }
+
+        function fetchDistricts(provinceId){
+            let $areaData = $('#districtData');
+            let result = ajaxCall(apiDomain + '/api/v1/public/area/getAllDistrict?provinceId=' + provinceId,'','get');
+            if(result.status=="success"){
+                let listOption = '';
+                result.data.forEach((item, index) => {
+                    listOption += `<option value="${item.id}" >${item.value}</option>`
+                });
+                $areaData.html(listOption);
+            }
+        }
+
+        function fetchCommune(district){
+            let $areaData = $('#communeData');
+            let result = ajaxCall(apiDomain + '/api/v1/public/area/getAllCommune?districtId=' + district,'','get');
+            if(result.status=="success"){
+                let listOption = '';
+                result.data.forEach((item, index) => {
+                    listOption += `<option value="${item.id}" >${item.value}</option>`
+                });
+                $areaData.html(listOption);
+            }
+        }
+        function loadDataSelect(select, url, focus, name, search) {
+            let param = 'enabledPage=false' + '&' + search;
+            let res = ajaxCall(url, param, 'GET');
+            if (res.status === 'success') {
+                $('#' + select).empty();
+                res.data.forEach((object) => {
+                    if (focus === object.id) {
+                        $('#' + select).append('<option value="' + object.id +'" attr-value = ' + object.value + ' selected>' + object.name + '</option>');
+                    } else {
+                        $('#' + select).append('<option value="' + object.id +'" attr-value = ' + object.value + ' >' + object.name + '</option>');
+                    }
+                });
+            } else {
+                alert(res.msg);
+            }
+            if (focus === '0' || !focus) {
+                $('#' + select).append('<option selected="" value= "" attr-value = 0>' + name + '</option>');
+            }
+        }
+    </script>
+</th:block>
+</body>
+</html>

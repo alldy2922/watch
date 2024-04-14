@@ -1,0 +1,10 @@
+/* Form input required */
+.form-item-required:after {
+  display: inline-block;
+  margin-right: 4px;
+  margin-left: 2px;
+  color: #ff4d4f;
+  font-size: 14px;
+  line-height: 1;
+  content: "*";
+}

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml"
+      th:replace="~{manage/layout/layout :: main-fragment(
+                                                ~{:: title},
+                                                ~{:: #css-resources},
+                                                ~{:: #js-resources},
+                                                ~{:: #main-content}
+                                               )}">
+<head>
+  <meta charset="UTF-8">
+  <title>Template</title>
+
+  <th:block id="css-resources">
+    <style>
+
+    </style>
+  </th:block>
+
+</head>
+<body>
+<th:block id="main-content">
+  <main id="main" class="main">
+
+    <div class="pagetitle">
+      <h1>Template</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item active"><a href="/config/template"></a>Template</li>
+        </ol>
+      </nav>
+    </div><!-- End Page Title -->
+
+    <section class="section">
+      <div class="row">
+        <div class="col-lg-12">
+
+          <div class="card">
+            <div class="card-body">
+              <br>
+
+              <div class="datatable-top">
+<!--                <div class="datatable-search">-->
+
+                  <div class="common-search">
+                    <div class="search-bar">
+                      <form class="search-form d-flex align-items-center" method="get" id="frm">
+                        <input type="text" id="search-name" name="templateName" placeholder="Theo tên template" title="Enter search keyword">
+                        <button type="button" title="Search"><i class="bi bi-search"></i></button>
+                      </form>
+                    </div>
+                  </div>
+<!--                </div>-->
+                <div style="float: right" sec:authorize="hasRole('TEMPLATE_E')">
+                  <button type="button" class="btn btn-success btn-sm" onclick="location.href='/admin/config/template/insert';">Thêm mới</button>
+                  <button type="button" class="btn btn-danger btn-sm" onclick="remove()">Xóa</button>
+                </div>
+
+              </div>
+
+              <!-- Table with stripped rows -->
+              <table class="table table-striped">
+                <thead>
+                <tr>
+                  <th scope="row">
+                    <input class="check-all-remove form-check-input" type="checkbox" onclick="allCheck()">
+                  </th>
+                  <th scope="col">#</th>
+                  <th scope="col">Mã</th>
+                  <th scope="col">Tên</th>
+                  <th scope="col">Kiểu</th>
+                  <th scope="col">Trạng thái</th>
+                </tr>
+                </thead>
+                <tbody id="data-table">
+
+                </tbody>
+              </table>
+
+              <!-- End Table with stripped rows -->
+              <th:block th:replace="~{manage/fragments/pagination :: ${pagination}}"></th:block>
+
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+</th:block>
+
+<th:block id="js-resources">
+  <script th:inline="javascript">
+    $( document ).ready(function() {
+      loadDataTable(1);
+    });
+
+    const pageParam = {
+      'formId': 'frm',
+      'dataListUrl': apiDomain + '/api/v1/admin/config/template',
+      'updateStatusUrl': apiDomain + '/api/v1/admin/config/template',
+      'deleteUrl': apiDomain + '/api/v1/admin/config/template'
+    };
+
+    function getDataTable(data){
+      let listData ='';
+      data.forEach((element, index) => {
+        let type = 'Build in';
+        let checkBox = '';
+        if(element.type == null){
+          type = '';
+          checkBox = '<input name="ids" class="check-box-remove form-check-input" type="checkbox" value="'+element.id+'">';
+        }
+        listData += '<tr>' +
+                '                  <th>' +
+                                    checkBox +
+                '                  </th>' +
+                '                  <th scope="row">'+rowOrder(index)+'</th>' +
+                '                  <td>'+element.id+'</td>' +
+                '                  <td>'+element.templateName+'</td>' +
+                '                  <td>'+type+'</td>' +
+                '                  <td><span id="status-template-'+element.id+'" onclick="updateStatus('+element.id+','+element.status+')" style="cursor: pointer" class="badge rounded-pill '+getClassStatus(element.status)+'">'+getTextStatus(element.status)+'</span></td>' +
+                '                  <td><i class="bi bi-pencil-square" style="cursor: pointer" onclick="detailPage('+element.id+')"></i></td>' +
+                '                </tr>';
+      });
+      return listData;
+    }
+
+    $( "#search-name" ).on( "keyup", function() {
+      loadDataTable(1);
+    } );
+
+    function detailPage(id){
+      $(location).attr('href', '/admin/config/template/update?id='+id);
+    }
+
+  </script>
+</th:block>
+</body>
+</html>

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{manage/layout/layout :: main-fragment(
+                                                ~{:: title},
+                                                ~{:: #css-resources},
+                                                ~{:: #js-resources},
+                                                ~{:: #main-content}
+                                               )}">
+<head>
+  <meta charset="UTF-8">
+  <title>Cập nhật Khuyến mãi</title>
+
+  <th:block id="css-resources">
+  </th:block>
+
+</head>
+<body>
+<th:block id="main-content">
+  <main id="main" class="main">
+
+    <div class="page-title">
+      <h1>Cập nhật Khuyến mãi</h1>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="list.html">Khuyến mãi</a></li>
+        <li class="breadcrumb-item active"><a href="update.html"></a>Cập nhật</li>
+      </ol>
+    </div>
+
+    <section class="section">
+      <div class="row">
+        <div class="col-lg-6">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title"></h5>
+              <form id="form">
+                <div class="row mb-3">
+                  <label class="col-sm-3 col-form-label">Tên</label>
+                  <div class="col-sm-9">
+                    <input type="text" name="name" id="name" class="form-control">
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <label class="col-sm-3 col-form-label">Type</label>
+<!--                  <div class="col-sm-9">-->
+<!--                    <input type="text" name="type" id="type" class="form-control">-->
+<!--                  </div>-->
+                  <div class="col-sm-9">
+                    <select class="form-select " name="type" id="type" aria-label="Default select example">
+                      <option selected="" value="CUSTOMER">CUSTOMER</option>
+                      <option value="AREA">AREA</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <label class="col-sm-3 col-form-label">Số tiền giảm (VND)</label>
+                  <div class="col-sm-9">
+                    <input type="number" name="value" id="value" class="form-control">
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <label class="col-sm-3 col-form-label">Ngày bắt đầu</label>
+                  <div class="col-sm-9">
+                    <input type="datetime-local" class="form-control" name="startDate" id="startDate">
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <label class="col-sm-3 col-form-label">Ngày kết thúc</label>
+                  <div class="col-sm-9">
+                    <input type="datetime-local" class="form-control" name="endDate" id="endDate">
+                  </div>
+                </div>
+<!--                <div class="row mb-3">-->
+<!--                  <label class="col-sm-3 col-form-label">unLimitTime</label>-->
+<!--                  <div class="col-sm-9">-->
+<!--                    <input type="number" name="unLimitTime" id="unLimitTime" class="form-control">-->
+<!--                  </div>-->
+<!--                </div>-->
+                <div class="row mb-3">
+                  <label class="col-sm-3 col-form-label pt-0">Trạng thái</label>
+                  <div class="col-sm-9">
+                    <select class="form-select " name="status" id="status" aria-label="Default select example">
+                      <option selected="" value="1">Sử dụng</option>
+                      <option value="0">Không sử dụng</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="row mb-3">
+                  <label class="col-sm-3 col-form-label"></label>
+                  <div class="col-sm-9">
+                    <button type="button" class="btn btn-primary" onclick="update()">Cập nhật</button>
+                  </div>
+                </div>
+              </form>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+</th:block>
+
+<th:block id="js-resources">
+  <script th:inline="javascript">
+    const form = $("#form");
+    const id = [[${id}]];
+    form.validate({
+      rules: {
+        name: {
+          required: true,
+          maxlength: 50
+        },
+
+
+      },
+      messages: {
+        name: "Vui lòng nhập tên và tên < 50 ký tự",
+      }
+    });
+    const pageParam = {
+      'formId': 'frm',
+      'addUrl': apiDomain + API.getSalesPromotionPromotionUrl(),
+      'updateUrl': apiDomain + API.getSalesPromotionPromotionUrl()
+    };
+    $(document).ready(function () {
+      getById();
+    });
+    function update() {
+      if (form.valid()) {
+        let param = {};
+        param['id'] = id;
+        param['name'] = $('#name').val();
+        param['type'] = $("#type option:selected").val();
+        param['value'] = $('#value').val();
+        param['startDate'] = $('#startDate').val();
+        param['endDate'] = $('#endDate').val();
+        param['unLimitTime'] = $('#unLimitTime').val();
+        param['status'] = $("#status option:selected").val();
+
+        let res = ajaxCall(pageParam.updateUrl, param, 'PATCH');
+        if (res.status === "success") {
+          alert("Cập nhật thành công");
+          $(location).attr('href', './list');
+        }else {
+          alert(res.msg);
+        }
+      }
+    }
+    function getById(){
+      let res = ajaxCall(apiDomain + API.getSalesPromotionPromotionUrl(id), '', 'GET', false);
+      if(res.status==="success") {
+        $("#name").val(res.data.name);
+        $("#type").val(res.data.type);
+        $("#value").val(res.data.value);
+        $("#unLimitTime").val(res.data.unLimitTime);
+        $('#startDate').val(res.data.startDate)
+        $('#endDate').val(res.data.endDate)
+        $("#status").val(res.data.status).change();
+      }
+    }
+    document.addEventListener('DOMContentLoaded', function () {
+      const startDate = document.querySelector('#startDate');
+      const endDate = document.querySelector('#endDate');
+
+      startDate.addEventListener('change', function () {
+        const startDateVal = this.value;
+        if (startDateVal && endDate.value && startDateVal > endDate.value) {
+          endDate.value = '';
+        } else {
+          endDate.disabled = false;
+          endDate.min = startDateVal;
+        }
+      });
+
+      endDate.addEventListener('change', function () {
+        let endDateVal = this.value;
+        if (startDate.value && endDateVal && startDate.value > endDateVal) {
+          endDate.value = '';
+        }
+      });
+    });
+  </script>
+</th:block>
+</body>
+</html>

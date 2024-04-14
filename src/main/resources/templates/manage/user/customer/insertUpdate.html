@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html" xmlns:sec="http://www.w3.org/1999/xhtml"
+      th:replace="~{manage/layout/layout :: main-fragment(
+                                                ~{:: title},
+                                                ~{:: #css-resources},
+                                                ~{:: #js-resources},
+                                                ~{:: #main-content}
+                                               )}">
+<head>
+  <meta charset="UTF-8">
+  <title th:if="${type == 'insert'}">Thêm khách hàng</title>
+  <title th:if="${type == 'update'}">Cập nhật khách hàng</title>
+
+  <th:block id="css-resources">
+    <style>
+
+    </style>
+  </th:block>
+
+</head>
+<body>
+<th:block id="main-content">
+  <main id="main" class="main">
+
+    <div class="pagetitle">
+      <h1 th:if="${type == 'insert'}">Thêm khách hàng</h1>
+      <h1 th:if="${type == 'update'}">Cập nhật khách hàng</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="/admin/user/customer"></a>Khách hàng</li>
+          <th:block th:if="${type == 'insert'}">
+            <li class="breadcrumb-item active"><a href="#"></a>Thêm mới</li>
+          </th:block>
+          <th:block th:if="${type == 'update'}">
+            <li class="breadcrumb-item active"><a href="#"></a>Cập nhật</li>
+          </th:block>
+        </ol>
+      </nav>
+    </div><!-- End Page Title -->
+
+    <section class="section">
+      <div class="row">
+        <div class="col-lg-12">
+
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title"></h5>
+
+              <!-- General Form Elements -->
+              <form id="form-user" class="row">
+                <div class="col-lg-6">
+
+                  <input type="hidden" name="id" id="id-customer">
+                  <div class="row mb-3">
+                    <label class="col-sm-2 col-form-label">Tên khách</label>
+                    <div class="col-sm-9">
+                      <input type="text" name="fullName" class="form-control" id="full-name">
+                    </div>
+                  </div>
+                  <div class="row mb-3">
+                    <label class="col-sm-2 col-form-label">Số điện thoại</label>
+                    <div class="col-sm-9">
+                      <input type="text" name="phoneNumber" class="form-control" id="phone">
+                    </div>
+                  </div>
+                  <div class="row mb-3">
+                    <label class="col-sm-2 col-form-label">Địa chỉ</label>
+                    <div class="col-sm-9">
+                      <select class="form-select selectpicker" data-live-search="true" id="province" name="province" aria-label="">
+                        <option value="">Tỉnh/TP</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="row mb-3">
+                    <label class="col-sm-2 col-form-label"></label>
+                    <div class="col-sm-9">
+                      <select class="form-select" id="district" name="district" aria-label="">
+                        <option value="">Quận/huyện</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="row mb-3">
+                    <label class="col-sm-2 col-form-label"></label>
+                    <div class="col-sm-9">
+                      <select class="form-select" id="commune" name="commune" aria-label="">
+                        <option value="">Phường/xã</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="row mb-3">
+                    <label class="col-sm-2 col-form-label"></label>
+                    <div class="col-sm-9">
+                      <input type="text" name="address" class="form-control" id="address" placeholder="Địa chỉ chi tiết">
+                    </div>
+                  </div>
+                  <div class="row mb-3">
+                    <label class="col-sm-2 col-form-label">Ngày sinh</label>
+                    <div class="col-sm-9">
+                      <input type="text" name="birthDay" class="form-control" id="birthDay">
+                    </div>
+                  </div>
+                  <div class="row mb-3">
+                    <label class="col-sm-2">Giới tính</label>
+                    <div class="col-sm-9">
+                      <input class="form-check-input" type="radio" name="gender" id="male" value="0" checked="">
+                      <label class="form-check-labe" style="margin-right: 40px" for="male">Nam</label>
+                      <input class="form-check-input" type="radio" name="gender" id="female" value="1">
+                      <label class="form-check-label" for="female">Nữ</label>
+                    </div>
+                  </div>
+                  <div class="row mb-3">
+                    <label class="col-sm-2">Loại khách</label>
+                    <div class="col-sm-9">
+                      <input class="form-check-input" type="radio" name="type" id="personal" value="0" checked="">
+                      <label class="form-check-label" style="margin-right: 40px" for="personal">Cá nhân</label>
+                      <input class="form-check-input" type="radio" name="type" id="company" value="1">
+                      <label class="form-check-label" for="company">Công ty</label>
+                    </div>
+                  </div>
+
+                </div>
+                <div class="col-lg-6">
+                  <div class="row mb-3">
+                    <label class="col-sm-2 col-form-label">Mã số thuế</label>
+                    <div class="col-sm-9">
+                      <input type="text" name="taxCode" class="form-control" id="taxCode">
+                    </div>
+                  </div>
+                  <div class="row mb-3">
+                    <label class="col-sm-2 col-form-label">Email</label>
+                    <div class="col-sm-9">
+                      <input type="text" name="email" class="form-control" id="email">
+                    </div>
+                  </div>
+                  <div class="row mb-3">
+                    <label class="col-sm-2 col-form-label">Facebook</label>
+                    <div class="col-sm-9">
+                      <input type="text" name="facebook" class="form-control" id="facebook">
+                    </div>
+                  </div>
+                  <div class="row mb-3">
+                    <label class="col-sm-2 col-form-label">Nhóm</label>
+                    <div class="col-sm-9">
+                      <input type="text" name="customerGroup" class="form-control" id="customerGroup">
+                    </div>
+                  </div>
+                  <div class="row mb-3">
+                    <label class="col-sm-2 col-form-label">Ghi chú</label>
+                    <div class="col-sm-9">
+                      <textarea class="form-control" name="note" id="note" style="height: 100px;"></textarea>
+                    </div>
+                  </div>
+                  <div class="row mb-3">
+                    <label class="col-sm-2 col-form-label">Trạng thái</label>
+                    <div class="col-sm-9">
+                      <select class="form-select" name="status" aria-label="" id="status">
+                        <option selected="" value="1">Sử dụng</option>
+                        <option value="0">Không sử dụng</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </form>
+
+
+              <div class="row mb-3" sec:authorize="hasRole('CUSTOMER_E')">
+                <label class="col-sm-2 col-form-label"></label>
+                <div class="col-sm-10">
+                  <button type="button" class="btn btn-primary" onclick="saveOrUpdate()">
+                    <th:block th:if="${type == 'insert'}">Lưu</th:block>
+                    <th:block th:if="${type == 'update'}">Cập nhật</th:block>
+                  </button>
+                  <button type="button" class="btn btn-danger" onclick="cancel('/admin/user/customer')">Hủy</button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+</th:block>
+
+<th:block id="js-resources">
+  <script th:inline="javascript">
+    const id = [[${id}]];
+
+    $(document).ready(function() {
+      addAddress();
+      getDetail();
+    });
+
+    jQuery.validator.addMethod('phone', function (value) {
+      let regex = /(84|0[3|5|7|8|9])+([0-9]{8})\b/g;
+      return value.trim().match(regex);
+    });
+
+    $("#form-user").validate({
+      invalidHandler: function(form, validator) {
+        let errors = validator.numberOfInvalids();
+        if (errors) {
+          validator.errorList[0].element.focus();
+        }
+      },
+      highlight: function(element, errorClass) {
+        $(element).removeClass(errorClass);
+      },
+      rules: {
+        fullName:"required",
+        phoneNumber:{
+          required: true,
+          phone: true,
+        },
+        province: "required",
+        district: "required",
+        commune: "required",
+        address: "required",
+      },
+      messages: {
+        fullName: "Vui lòng nhập tên",
+        phoneNumber:{
+          required: "Vui lòng nhập số điện thoại",
+          phone: "Vui lòng nhập đúng định dạnh số điện thoại"
+        },
+        province: "Vui lòng chọn",
+        district: "Vui lòng chọn",
+        commune: "Vui lòng chọn",
+        address: "Vui lòng nhập địa chỉ",
+      }
+    });
+
+
+    function saveOrUpdate(){
+      if($("#form-user").valid()){
+        let form = $('#form-user')[0];
+        let formData = new FormData(form);
+        let res = ajaxCall(apiDomain + '/api/v1/admin/user/customer',formData,'post',false);
+        if(res.status=="success") {
+          if(id == null){
+            alert("Thêm mới thành công");
+          }else {
+            alert("Cập nhật thành công");
+          }
+          $(location).attr('href', '/admin/user/customer');
+        }
+        if(res.status == "fail"){
+          alert(res.msg);
+        }
+      }
+    }
+
+    function getDetail(){
+      if(id != null){
+        let result = ajaxCall(apiDomain + '/api/v1/admin/user/customer/'+id,'','get',false);
+        if(result.status=="success") {
+          let res = result.data;
+          $("#id-customer").val(res.id);
+          $("#full-name").val(res.fullName);
+          $("#phone").val(res.phoneNumber);
+          $("#username").val(res.username);
+          $("#province").val(res.province).change();
+          $("#district").val(res.district).change();
+          $("#commune").val(res.commune).change();
+          $("#address").val(res.address);
+          $("#birthDay").val(res.birthDay);
+          $(`input[name="gender"][value="${res.gender}"]`).prop('checked', true);
+          $(`input[name="type"][value="${res.type}"]`).prop('checked', true);
+          $("#taxCode").val(res.taxCode);
+          $("#email").val(res.email);
+          $("#facebook").val(res.facebook);
+          $("#customerGroup").val(res.customerGroup);
+          $("#note").val(res.note);
+          $("#status").val(res.status).change();
+        }
+      }
+    }
+
+    function addAddress(){
+      let province = ajaxCall(apiDomain + '/api/v1/public/area/getAllProvince', '', 'get');
+      //set province
+      if(province.status == "200") {
+        province.data.forEach((item, index) => {
+          $('#province').append(`<option attr-province="true" value="${item.id}">${item.value}</option>`);
+        });
+      }
+      //set district
+      $('#province').on('change', function() {
+        $('option[attr-district="true"]').remove();
+        $('option[attr-commune="true"]').remove();
+        let district = ajaxCall(apiDomain + '/api/v1/public/area/getAllDistrict?provinceId='+$(this).val(), '', 'get');
+        if(district.status == "200") {
+          district.data.forEach((item, index) => {
+            $('#district').append(`<option attr-district="true" value="${item.id}">${item.value}</option>`);
+          });
+        }
+      });
+
+      $('#district').on('change', function() {
+        $('option[attr-commune="true"]').remove();
+        let commune = ajaxCall(apiDomain + '/api/v1/public/area/getAllCommune?districtId='+$(this).val(), '', 'get');
+        if(commune.status == "200") {
+          commune.data.forEach((item, index) => {
+            $('#commune').append(`<option attr-commune="true" value="${item.id}">${item.value}</option>`);
+          });
+        }
+      });
+
+    }
+
+  </script>
+</th:block>
+</body>
+</html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{manage/layout/layout :: main-fragment(
+                                                ~{:: title},
+                                                ~{:: #css-resources},
+                                                ~{:: #js-resources},
+                                                ~{:: #main-content}
+                                               )}">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+
+    <th:block id="css-resources">
+        <style>
+
+        </style>
+    </th:block>
+
+</head>
+<body>
+<th:block id="main-content">
+    <main id="main" class="main">
+
+        <div class="pagetitle">
+            <h1>Dashboard</h1>
+        </div>
+
+    </main>
+</th:block>
+
+<th:block id="js-resources">
+    <script th:inline="javascript">
+
+    </script>
+</th:block>
+</body>
+</html>

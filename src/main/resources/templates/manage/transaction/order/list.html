@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{manage/layout/layout :: main-fragment(
+                                                ~{:: title},
+                                                ~{:: #css-resources},
+                                                ~{:: #js-resources},
+                                                ~{:: #main-content}
+                                               )}">
+<head>
+    <meta charset="UTF-8">
+    <title>Đơn hàng</title>
+
+    <th:block id="css-resources">
+        <style>
+            .common-search {
+                width: 60%;
+            }
+
+            .common-search .search-form .choices {
+                border: 0;
+                color: #012970;
+                border: 1px solid rgba(1, 41, 112, 0.2);
+                padding: 7px 38px 7px 8px;
+                border-radius: 3px;
+                transition: 0.3s;
+                width: 100%;
+            }
+
+            .common-search .search-form .col-form-label {
+                font-size: 14px;
+            }
+
+            .common-search .search-form .multi-select-box {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+
+            .common-search .search-form .common-search-item {
+                width: 50%;
+                margin-right: 10px;
+                margin-bottom: 10px;
+            }
+
+            .common-search .search-form input {
+                width: 97%
+            }
+
+            .choices__inner {
+                border: 0 !important
+            }
+        </style>
+    </th:block>
+
+</head>
+<body>
+<th:block id="main-content">
+    <main id="main" class="main">
+
+        <div class="pagetitle">
+            <h1>Template</h1>
+        </div><!-- End Page Title -->
+        <section class="section">
+            <div class="row">
+                <div class="col-lg-12">
+
+                    <div class="card">
+                        <div class="card-body">
+                            <br>
+
+                            <div class="datatable-top">
+                                <!--                <div class="datatable-search">-->
+
+                                <div class="common-search">
+                                    <div class="search-bar">
+                                        <form class="search-form d-flex flex-wrap" method="get" action="#" id="frm">
+                                            <div class="row multi-select-box">
+                                                <label for="statusFilter" class="col-sm-2 col-form-label">Trạng thái</label>
+                                                <div class="col-sm-10">
+                                                    <select class="form-select" name="status" id="statusFilter" aria-label="" multiple>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="row common-search-item">
+                                                <label for="inputIsPaid" class="col-sm-5 col-form-label">Tìm theo thanh toán</label>
+                                                <div class="col-sm-7">
+                                                    <select id="inputIsPaid" class="form-select" name="isPaid">
+                                                        <option selected="" value="">Tất cả...</option>
+                                                        <option value="true">Đã thanh toán</option>
+                                                        <option value="false">Chưa thanh toán</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="row common-search-item">
+                                                <label for="inputMarketPlace" class="col-sm-4 col-form-label">Tìm theo sàn</label>
+                                                <div class="col-sm-8">
+                                                    <select id="inputMarketPlace" class="form-select" name="marketPlace">
+                                                        <option selected="" value="">Tất cả...</option>
+                                                        <option value="WEB">Web</option>
+                                                        <option value="SHOPEE">Shopee</option>
+                                                        <option value="TIKTOK">Tiktok</option>
+                                                        <option value="LAZADA">Lazada</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="row common-search-item">
+                                                <label for="startDate" class="col-sm-4 col-form-label">Từ ngày</label>
+                                                <div class="col-sm-8">
+                                                    <input type="date" id="startDate" class="form-control" name="startReception">
+                                                </div>
+                                            </div>
+                                            <div class="row common-search-item">
+                                                <label for="endDate" class="col-sm-4 col-form-label">Đến ngày</label>
+                                                <div class="col-sm-8">
+                                                    <input type="date" id="endDate" class="form-control" name="endReception">
+                                                </div>
+                                            </div>
+                                            <input type="text" name="search" placeholder="Tìm SĐT, Mã đơn,..." title="Enter search keyword">
+                                            <button type="button" id="frmSubmit" title="Search"><i class="bi bi-search"></i></button>
+                                        </form>
+                                    </div>
+                                </div>
+                                <!--                </div>-->
+                                <div style="float: right">
+                                    <button type="button" class="btn btn-success btn-sm" onclick="location.href='/admin/transaction/order/insert';">Thêm mới</button>
+<!--                                    <button type="button" class="btn btn-danger btn-sm">Xóa</button>-->
+                                </div>
+
+                            </div>
+
+                            <!-- Table with stripped rows -->
+                            <table class="table table-striped">
+                                <thead>
+                                <tr>
+                                    <th scope="row">
+                                        <input class="form-check-input" type="checkbox">
+                                    </th>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Mã</th>
+                                    <th scope="col">SĐT</th>
+                                    <th scope="col">Đơn từ sàn</th>
+                                    <th scope="col">Đã thanh toán</th>
+                                    <th scope="col">Thành tiền</th>
+                                    <th scope="col">Trạng thái</th>
+                                </tr>
+                                </thead>
+                                <tbody id="data-table">
+                                </tbody>
+                            </table>
+
+                            <!-- End Table with stripped rows -->
+                            <th:block th:replace="~{manage/fragments/pagination :: ${pagination}}"></th:block>
+
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+    </main>
+</th:block>
+
+<th:block id="js-resources">
+    <script th:inline="javascript">
+        let rolesChoice;
+
+        const pageParam = {
+            'formId': 'frm',
+            'dataListUrl': apiDomain + '/api/v1/admin/order'
+        };
+
+        $( document ).ready(function() {
+            addOptionStatus();
+            rolesChoice = new Choices('#statusFilter', {
+                removeItemButton: true,
+                maxItemCount:100,
+                searchResultLimit:100,
+                renderChoiceLimit:100
+            });
+            loadDataTable(1);
+
+            $('#frmSubmit').on('click', (e) => {
+                let searchFrm = $('#frm');
+                console.log(searchFrm.serialize());
+                loadDataTable(1);
+            });
+
+        });
+
+
+        //build list data
+        //default name: getDataTable(data)
+        function getDataTable(data){
+            let listData ='';
+            data.forEach((element, index) => {
+                listData += '<tr>' +
+                    '                  <th>' +
+                    '                    <input class="form-check-input" type="checkbox">' +
+                    '                  </th>' +
+                    '                  <th scope="row">'+rowOrder(index)+'</th>' +
+                    '                  <td>'+element.id+'</td>' +
+                    '                  <td>'+element.customerId+'</td>' +
+                    '                  <td>'+element.marketPlace+'</td>' +
+                    '                       <td><input name="ids" class="check-box-remove form-check-input" type="checkbox" disabled="true" ' + getChecked(element.isPaid) + '></td>' +
+                    '                  <td>'+element.cost+'</td>' +
+                    '                  <td><span id="status-template-'+element.id+'" style="cursor: pointer" class="badge rounded-pill '+getBooleanClassOrderStatus(element.status)+'">'+getBooleanOrderStatus(element.status)+'</span></td>' +
+                    '                  <td><i class="bi bi-pencil-square" style="cursor: pointer" onclick="detailPage('+element.id+')"></i></td>' +
+                    '                </tr>'
+
+            });
+            return listData;
+        }
+
+        function detailPage(id){
+            $(location).attr('href', '/admin/transaction/order/update?id='+id);
+        }
+
+        function addOptionStatus(){
+            let params = "group=ORDER_STATUS"
+            let result = ajaxCall(apiDomain + '/api/v1/public/common-code',params,'get');
+            if(result.status=="success"){
+                let listOption = '';
+                result.data.forEach((item, index) => {
+                    listOption += `<option value="${item.value}">${item.name}</option>`
+                });
+                $('#statusFilter').html(listOption);
+            }
+        }
+
+
+    </script>
+</th:block>
+</body>
+</html>

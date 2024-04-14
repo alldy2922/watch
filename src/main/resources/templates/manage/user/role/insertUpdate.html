@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html" xmlns:sec="http://www.w3.org/1999/xhtml"
+      th:replace="~{manage/layout/layout :: main-fragment(
+                                                ~{:: title},
+                                                ~{:: #css-resources},
+                                                ~{:: #js-resources},
+                                                ~{:: #main-content}
+                                               )}">
+<head>
+    <meta charset="UTF-8">
+    <title th:if="${type == 'insert'}">Thêm quyền</title>
+    <title th:if="${type == 'update'}">Cập nhật quyền</title>
+
+    <th:block id="css-resources">
+        <style>
+
+        </style>
+    </th:block>
+
+</head>
+<body>
+<th:block id="main-content">
+    <main id="main" class="main">
+
+        <div class="pagetitle">
+            <h1 th:if="${type == 'insert'}">Thêm quyền</h1>
+            <h1 th:if="${type == 'update'}">Cập nhật quyền</h1>
+            <nav>
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/admin/user/role">Quyền</a></li>
+                    <th:block th:if="${type == 'insert'}">
+                        <li class="breadcrumb-item active"><a href="/admin/user/role/insert"></a>Thêm quyền</li>
+                    </th:block>
+                    <th:block th:if="${type == 'update'}">
+                        <li class="breadcrumb-item active"><a href="/admin/user/role/update"></a>Cập nhật quyền</li>
+                    </th:block>
+                </ol>
+            </nav>
+        </div><!-- End Page Title -->
+
+        <section class="section">
+            <div class="row">
+                <div class="col-lg-12">
+
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title"></h5>
+
+                            <!-- General Form Elements -->
+                            <form id="form-role">
+                                <input type="hidden" name="id" id="id-role">
+                                <div class="row mb-3">
+                                    <label class="col-sm-2 col-form-label">Mã</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" name="code" class="form-control" id="code">
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label class="col-sm-2 col-form-label">Mô tả</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" name="description" class="form-control" id="description">
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <label class="col-sm-2 col-form-label">Trạng thái</label>
+                                    <div class="col-sm-10">
+                                        <select class="form-select" name="status" aria-label="" id="status">
+                                            <option selected="" value="1">Sử dụng</option>
+                                            <option value="0">Không sử dụng</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <label class="col-sm-2 col-form-label"></label>
+                                    <div class="col-sm-10 pt-2" style="border: #ccc solid 1px; border-radius: 5px">
+                                        <!--Hàng hóa-->
+                                        <div>
+                                            <div class="form-check">
+                                                <input class="form-check-input role-group" type="checkbox" id="goods">
+                                                <label class="form-check-label" for="goods">Hàng hóa</label>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-sm-1"></div>
+                                                <label class="col-sm-3">Hãng</label>
+                                                <div class="form-check col-sm-3">
+                                                    <input class="form-check-input role-check" type="checkbox" name="brand" id="brand-v" value="BRAND-V">
+                                                    <label class="form-check-label" for="brand-v">Xem</label>
+                                                </div>
+                                                <div class="form-check col-sm-3">
+                                                    <input class="form-check-input role-check goods" type="checkbox" name="brand" id="brand-e" value="BRAND-E">
+                                                    <label class="form-check-label" for="brand-e">Sửa</label>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-sm-1"></div>
+                                                <label class="col-sm-3">Danh mục</label>
+                                                <div class="form-check col-sm-3">
+                                                    <input class="form-check-input role-check" type="checkbox" name="category" id="category-v" value="CATEGORY-V">
+                                                    <label class="form-check-label" for="category-v">Xem</label>
+                                                </div>
+                                                <div class="form-check col-sm-3">
+                                                    <input class="form-check-input role-check goods" type="checkbox" name="category" id="category-e" value="CATEGORY-E">
+                                                    <label class="form-check-label" for="category-e">Sửa</label>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-sm-1"></div>
+                                                <label class="col-sm-3">Sản phẩm</label>
+                                                <div class="form-check col-sm-3">
+                                                    <input class="form-check-input role-check" type="checkbox" name="product" id="product-v" value="PRODUCT-V">
+                                                    <label class="form-check-label" for="product-v">Xem</label>
+                                                </div>
+                                                <div class="form-check col-sm-3">
+                                                    <input class="form-check-input role-check goods" type="checkbox" name="product" id="product-e" value="PRODUCT-E">
+                                                    <label class="form-check-label" for="product-e">Sửa</label>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-sm-1"></div>
+                                                <label class="col-sm-3">Review</label>
+                                                <div class="form-check col-sm-3">
+                                                    <input class="form-check-input role-check" type="checkbox" name="review" id="review-v" value="REVIEW-V">
+                                                    <label class="form-check-label" for="review-v">Xem</label>
+                                                </div>
+                                                <div class="form-check col-sm-3">
+                                                    <input class="form-check-input role-check goods" type="checkbox" name="review" id="review-e" value="REVIEW-E">
+                                                    <label class="form-check-label" for="review-e">Sửa</label>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!--Ưu đãi-->
+                                        <div>
+                                            <div class="form-check">
+                                                <input class="form-check-input role-group" type="checkbox" id="promotion">
+                                                <label class="form-check-label" for="promotion">Ưu đãi</label>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-sm-1"></div>
+                                                <label class="col-sm-3">Flash sale</label>
+                                                <div class="form-check col-sm-3">
+                                                    <input class="form-check-input role-check" type="checkbox" name="flashSale" id="flash-sale-v" value="FLASH_SALE-V">
+                                                    <label class="form-check-label" for="flash-sale-v">Xem</label>
+                                                </div>
+                                                <div class="form-check col-sm-3">
+                                                    <input class="form-check-input role-check promotion" type="checkbox" name="flashSale" id="flash-sale-e" value="FLASH_SALE-E">
+                                                    <label class="form-check-label" for="flash-sale-e">Sửa</label>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-sm-1"></div>
+                                                <label class="col-sm-3">Khuyến mại</label>
+                                                <div class="form-check col-sm-3">
+                                                    <input class="form-check-input role-check" type="checkbox" name="sale" id="sale-v" value="SALE-V">
+                                                    <label class="form-check-label" for="sale-v">Xem</label>
+                                                </div>
+                                                <div class="form-check col-sm-3">
+                                                    <input class="form-check-input role-check promotion" type="checkbox" name="sale" id="sale-e" value="SALE-E">
+                                                    <label class="form-check-label" for="sale-e">Sửa</label>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!--Giao dịch-->
+                                        <div>
+                                            <div class="form-check">
+                                                <input class="form-check-input role-group" type="checkbox" id="transaction">
+                                                <label class="form-check-label" for="transaction">Giao dịch</label>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-sm-1"></div>
+                                                <label class="col-sm-3">Đơn hàng</label>
+                                                <div class="form-check col-sm-3">
+                                                    <input class="form-check-input role-check" type="checkbox" name="order" id="order-v" value="ORDER-V">
+                                                    <label class="form-check-label" for="order-v">Xem</label>
+                                                </div>
+                                                <div class="form-check col-sm-3">
+                                                    <input class="form-check-input role-check transaction" type="checkbox" name="order" id="order-e" value="ORDER-E">
+                                                    <label class="form-check-label" for="order-e">Sửa</label>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-sm-1"></div>
+                                                <label class="col-sm-3">Vận đơn</label>
+                                                <div class="form-check col-sm-3">
+                                                    <input class="form-check-input role-check" type="checkbox" name="shippingOrder" id="shipping-order-v" value="SHIPPING_ORDER-V">
+                                                    <label class="form-check-label" for="shipping-order-v">Xem</label>
+                                                </div>
+                                                <div class="form-check col-sm-3">
+                                                    <input class="form-check-input role-check transaction" type="checkbox" name="shippingOrder" id="shipping-order-e" value="SHIPPING_ORDER-E">
+                                                    <label class="form-check-label" for="shipping-order-e">Sửa</label>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-sm-1"></div>
+                                                <label class="col-sm-3">Trả hàng</label>
+                                                <div class="form-check col-sm-3">
+                                                    <input class="form-check-input role-check" type="checkbox" name="returnOrder" id="return-order-v" value="RETURN_ORDER-V">
+                                                    <label class="form-check-label" for="return-order-v">Xem</label>
+                                                </div>
+                                                <div class="form-check col-sm-3">
+                                                    <input class="form-check-input role-check transaction" type="checkbox" name="returnOrder" id="return-order-e" value="RETURN_ORDER-E">
+                                                    <label class="form-check-label" for="return-order-e">Sửa</label>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!--Đối tác-->
+                                        <div>
+                                            <div class="form-check">
+                                                <input class="form-check-input role-group" type="checkbox" id="partner">
+                                                <label class="form-check-label" for="partner">Đối tác</label>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-sm-1"></div>
+                                                <label class="col-sm-3">Khách hàng</label>
+                                                <div class="form-check col-sm-3">
+                                                    <input class="form-check-input role-check" type="checkbox" name="customer" id="customer-v" value="CUSTOMER-V">
+                                                    <label class="form-check-label" for="customer-v">Xem</label>
+                                                </div>
+                                                <div class="form-check col-sm-3">
+                                                    <input class="form-check-input role-check partner" type="checkbox" name="customer" id="customer-e" value="CUSTOMER-E">
+                                                    <label class="form-check-label" for="customer-e">Sửa</label>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-sm-1"></div>
+                                                <label class="col-sm-3">Đơn vị vận chuyển</label>
+                                                <div class="form-check col-sm-3">
+                                                    <input class="form-check-input role-check" type="checkbox" name="shippingUnit" id="shipping-unit-v" value="SHIPPING_UNIT-V">
+                                                    <label class="form-check-label" for="shipping-unit-v">Xem</label>
+                                                </div>
+                                                <div class="form-check col-sm-3">
+                                                    <input class="form-check-input role-check partner" type="checkbox" name="shippingUnit" id="shipping-unit-e" value="SHIPPING_UNIT-E">
+                                                    <label class="form-check-label" for="shipping-unit-e">Sửa</label>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!--Thông tin-->
+                                        <div>
+                                            <div class="form-check">
+                                                <input class="form-check-input role-group" type="checkbox" id="info">
+                                                <label class="form-check-label" for="info">Thông tin</label>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-sm-1"></div>
+                                                <label class="col-sm-3">Tin tức</label>
+                                                <div class="form-check col-sm-3">
+                                                    <input class="form-check-input role-check" type="checkbox" name="new" id="news-v" value="NEWS-V">
+                                                    <label class="form-check-label" for="news-v">Xem</label>
+                                                </div>
+                                                <div class="form-check col-sm-3">
+                                                    <input class="form-check-input role-check info" type="checkbox" name="new" id="news-e" value="NEWS-E">
+                                                    <label class="form-check-label" for="news-e">Sửa</label>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-sm-1"></div>
+                                                <label class="col-sm-3">Sự kiện</label>
+                                                <div class="form-check col-sm-3">
+                                                    <input class="form-check-input role-check" type="checkbox" name="event" id="event-v" value="EVENT-V">
+                                                    <label class="form-check-label" for="event-v">Xem</label>
+                                                </div>
+                                                <div class="form-check col-sm-3">
+                                                    <input class="form-check-input role-check info" type="checkbox" name="event" id="event-e" value="EVENT-E">
+                                                    <label class="form-check-label" for="event-e">Sửa</label>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-sm-1"></div>
+                                                <label class="col-sm-3">Bài viết</label>
+                                                <div class="form-check col-sm-3">
+                                                    <input class="form-check-input role-check" type="checkbox" name="posts" id="posts-v" value="POSTS-V">
+                                                    <label class="form-check-label" for="posts-v">Xem</label>
+                                                </div>
+                                                <div class="form-check col-sm-3">
+                                                    <input class="form-check-input role-check info" type="checkbox" name="posts" id="posts-e" value="POSTS-E">
+                                                    <label class="form-check-label" for="posts-e">Sửa</label>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!--Cấu hình-->
+                                        <div>
+                                            <div class="form-check">
+                                                <input class="form-check-input role-group" type="checkbox" id="config">
+                                                <label class="form-check-label" for="config">Cấu hình</label>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-sm-1"></div>
+                                                <label class="col-sm-3">Template</label>
+                                                <div class="form-check col-sm-3">
+                                                    <input class="form-check-input role-check" type="checkbox" name="template" id="template-v" value="TEMPLATE-V">
+                                                    <label class="form-check-label" for="template-v">Xem</label>
+                                                </div>
+                                                <div class="form-check col-sm-3">
+                                                    <input class="form-check-input role-check config" type="checkbox" name="template" id="template-e" value="TEMPLATE-E">
+                                                    <label class="form-check-label" for="template-e">Sửa</label>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-sm-1"></div>
+                                                <label class="col-sm-3">Component</label>
+                                                <div class="form-check col-sm-3">
+                                                    <input class="form-check-input role-check" type="checkbox" name="component" id="component-v" value="COMPONENT-V">
+                                                    <label class="form-check-label" for="component-v">Xem</label>
+                                                </div>
+                                                <div class="form-check col-sm-3">
+                                                    <input class="form-check-input role-check config" type="checkbox" name="component" id="component-e" value="COMPONENT-E">
+                                                    <label class="form-check-label" for="component-e">Sửa</label>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-sm-1"></div>
+                                                <label class="col-sm-3">Page</label>
+                                                <div class="form-check col-sm-3">
+                                                    <input class="form-check-input role-check" type="checkbox" name="page" id="page-v" value="PAGE-V">
+                                                    <label class="form-check-label" for="page-v">Xem</label>
+                                                </div>
+                                                <div class="form-check col-sm-3">
+                                                    <input class="form-check-input role-check config" type="checkbox" name="page" id="page-e" value="PAGE-E">
+                                                    <label class="form-check-label" for="page-e">Sửa</label>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                                </div>
+
+                            </form>
+
+                            <div class="row mb-3" sec:authorize="hasRole('PERMISSION_E')">
+                                <label class="col-sm-2 col-form-label"></label>
+                                <div class="col-sm-10">
+                                    <button type="button" class="btn btn-primary" onclick="saveOrUpdate()">
+                                        <th:block th:if="${type == 'insert'}">Lưu</th:block>
+                                        <th:block th:if="${type == 'update'}">Cập nhật</th:block>
+                                    </button>
+                                    <button type="button" class="btn btn-danger" onclick="cancel('/admin/user/role')">Hủy</button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+    </main>
+</th:block>
+
+<th:block id="js-resources">
+    <script th:inline="javascript">
+        const id = [[${id}]];
+
+        $(document).ready(function() {
+            getDetail();
+        });
+
+        $('input[class*="role-check"]').change( function(){
+            let val = $(this).val();
+            let arr = val.split('-');
+            let checked = $(this).prop('checked');
+            if(arr[1] === 'E'){
+                let viewVal = arr[0] + '-V';
+                if(checked) {
+                    $('input[value="' + viewVal + '"]').prop('checked', true).prop('disabled', true);
+                }else{
+                    $('input[value="' + viewVal + '"]').prop('checked', false).prop('disabled', false);
+                }
+            }
+
+            let className = $(this).attr('class');
+            let totalTag = $('input[class*="' + className + '"]').length;
+            let totalTagChecked = $('input[class*="' + className + '"]:checked').length;
+            let id = className.split(' ')[2];
+            if(totalTag === totalTagChecked){
+                $('#'+id).prop('checked',true);
+            }else{
+                $('#'+id).prop('checked',false);
+            }
+
+        });
+
+        $('input[class*="role-group"]').change( function(){
+            let id = $(this).attr('id');
+            let checked = $(this).prop('checked');
+            if(checked){
+                $('input[class*="' + id + '"]:not(:checked)').trigger('click');
+            }else{
+                $('input[class*="' + id + '"]:checked').trigger('click');
+            }
+
+        });
+
+        $("#form-role").validate({
+            invalidHandler: function(form, validator) {
+                let errors = validator.numberOfInvalids();
+                if (errors) {
+                    validator.errorList[0].element.focus();
+                }
+            },
+            highlight: function(element, errorClass) {
+                $(element).removeClass(errorClass);
+            },
+            rules: {
+                code: "required",
+                description: "required"
+            },
+            messages: {
+                code: "Vui lòng nhập mã",
+                description: "Vui lòng nhập mô tả"
+            }
+        });
+
+        function saveOrUpdate(){
+            if($("#form-role").valid()){
+                let form = $('#form-role')[0];
+                let formData = new FormData(form);
+                let roles = [];
+                for (const [key, value] of formData) {
+                    if(key != 'code' && key != 'description' && key != 'status' && key != 'id'){
+                        if(value != null){
+                            roles.push(value);
+                        }
+                    }
+                }
+                formData.set('roles', roles);
+                let method = id != null ? 'put' : 'post';
+                let res = ajaxCall(apiDomain + '/api/v1/admin/user/role',formData,method,false);
+                if(res.status=="success") {
+                    if(id == null){
+                        alert("Thêm mới thành công");
+                    }else {
+                        alert("Cập nhật thành công");
+                    }
+                    $(location).attr('href', '/admin/user/role');
+                }
+                if(res.status == "fail"){
+                    alert(res.msg);
+                }
+            }
+        }
+
+        function getDetail(){
+            if(id != null){
+                let result = ajaxCall(apiDomain + '/api/v1/admin/user/role/'+id,'','get',false);
+                if(result.status=="success") {
+                    let res = result.data;
+                    $("#id-role").val(res.id);
+                    $("#code").val(res.code);
+                    $("#description").val(res.description);
+                    $("#status").val(res.status).change();
+                    for(let role of res.roles){
+                        $('input[value="' + role + '"]').trigger('click');
+                    }
+                }
+            }
+        }
+
+
+    </script>
+</th:block>
+</body>
+</html>

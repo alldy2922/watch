@@ -1,0 +1,160 @@
+<th:block th:fragment="attributePage">
+    <div id="attributes">
+        <div id="listAttributes" class="mb-3">
+            <div id="attributes-item-1">
+                <div class="row">
+                    <label class="col-sm-2">Đặc điểm danh mục</label>
+                    <div class="col-sm-2">
+                        <input type="text" class="form-control" name="key">
+                    </div>
+                    <div class="col-sm-3">
+                        <select class="form-select " name="type" type="select-one">
+                            <option  value="BUILD-IN">build in</option>
+                            <option selected="" value="NUMBER">number</option>
+                            <option value="TEXT">text</option>
+                            <option value="MULTI-SELECT">Select</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-3" name = "choices" style="display: none">
+                        <input id="demo-1" type="text" class="form-control" name="value">
+                    </div>
+                    <div class="col-sm-2">
+                        <div>
+                            <i style="font-size: 25px; cursor: pointer" class="bi bi-plus-circle" onclick="attributeAdd()"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <input type="hidden" name="indexAttributes" id="indexAttributes" value="1"/>
+    <script th:inline="javascript">
+        function attributeAdd(){
+            let attributesHtml = $('#indexAttributes');
+            let indexAttributes = attributesHtml.val();
+            let item = `<div id="attributes-item-${indexAttributes}">
+                            <div class="row">
+                                <label class="col-sm-2"></label>
+                                <div class="col-sm-2">
+                                    <input type="text" class="form-control" name="key">
+                                </div>
+                                <div class="col-sm-3">
+                                    <select class="form-select " type="select-one" name="type" id = 'type-${indexAttributes}'>
+                                        <option value="BUILD-IN">build in</option>
+                                        <option selected="" value="NUMBER">number</option>
+                                        <option value="TEXT">text</option>
+                                        <option value="MULTI-SELECT">Select</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-3" name = "choices" style="display: none">
+                                    <input type="text" class="form-control" name="value">
+                                </div>
+
+                                <div class="col-sm-2">
+                                    <div>
+                                        <i style="font-size: 25px; cursor: pointer" class="bi bi-plus-circle" onclick="attributeAdd()"></i>
+                                        <i style="font-size: 25px; cursor: pointer" class="bi bi-dash-circle" onclick="deleteBanner('#attributes-item-${indexAttributes}')"></i>
+                                    </div>
+                                </div>
+                        </div>
+
+                        `;
+            console.log(item);
+            $('#listAttributes').append(item);
+            indexAttributes ++;
+            attributesHtml.val(indexAttributes);
+            attributesHtml.attr('value',indexAttributes);
+            $(`#type-${indexAttributes}`).change();
+        }
+        function deleteBanner(id){
+            $(id).remove();
+        }
+        function buildJsonAttributes(){
+            // let checkBanner = getJsonByForm('attributes','listAttributes',false,true,true,true,true);
+            return getJsonByForm('attributes', 'listAttributes', false, false, false, false, true);
+        }
+
+        function loadAttributes(data){
+            data.forEach((val) => {
+            let key = val.key;
+            let value = val.value;
+            let type = val.type;
+            let attributesHtml = $('#indexAttributes');
+            let indexAttributes = attributesHtml.val();
+            if (indexAttributes === '1'){
+                $("#attributes-item-1 input[name='key']").attr('value',key);
+                $("#attributes-item-1 input[name='type']").attr('value',type);
+                $("#attributes-item-1 input[name='value']").attr('value',value);
+            }else{
+                let item = `<div id="attributes-item-${indexAttributes}">
+                            <div class="row">
+                                <label class="col-sm-2"></label>
+                                <div class="col-sm-2">
+                                    <input type="text" class="form-control" name="key" value="`+key+`">
+                                </div>
+                                <div class="col-sm-3">
+                                    <select class="form-select " name="type" type="select-one">
+                                        <option  value="BUILD-IN">build in</option>
+                                        <option selected="" value="NUMBER">number</option>
+                                        <option value="TEXT">text</option>
+                                        <option value="MULTI-SELECT">Select</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-3" name = "choices" style="display: none">
+                                    <input id="demo-1" type="text" class="form-control" name="value" value="`+value+`">
+                                </div>
+                                <div class="col-sm-2">
+                                    <div>
+                                        <i style="font-size: 25px; cursor: pointer" class="bi bi-plus-circle" onclick="attributeAdd()"></i>
+                                        <i style="font-size: 25px; cursor: pointer" class="bi bi-dash-circle" onclick="deleteBanner('#attributes-item-${indexAttributes}')"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>`;
+                $('#listAttributes').append(item);
+            }
+            $ ("div[id^='attributes-item-"+indexAttributes+"'] select[name='type']").val(type).change();
+            if (type === "BUILD-IN"){
+                $ ("div[id='attributes-item-"+indexAttributes+"'] div[name='choices']").show();
+                $ ("div[id='attributes-item-"+indexAttributes+"'] input[name='value']").each(function() {new Choices(this,{value: value})}).val(value);
+            }
+            indexAttributes ++;
+            attributesHtml.val(indexAttributes);
+            attributesHtml.attr('value',indexAttributes);
+            })
+        }
+        function changeLevel(element){
+            let level = $("#level option:selected").val();
+            if (!level){
+                $('#parent').prop('disabled', true);
+            }else{
+                if(level == 1){
+                    $('#parent').prop('disabled', true);
+                }else{
+                    $('#parent').prop('disabled', false);
+                }
+                loadDataSelect("parent", pageParam.getCategories, '', "Danh mục cấp độ cao hơn","level="+(level-1));
+            }
+        }
+        function loadDataSelect(select, url, focus, name, search) {
+            let param = 'enabledPage=false' + '&' + search;
+            let res = ajaxCall(url, param, 'GET');
+            if (res.status === 'success') {
+                $('#' + select).empty();
+                res.data.forEach((object) => {
+                    if (focus === object.id) {
+                        $('#' + select).append('<option value=' + object.id + ' selected>' + object.name + '</option>');
+                    } else {
+                        $('#' + select).append('<option value=' + object.id + '>' + object.name + '</option>');
+                    }
+                });
+            } else {
+                alert(res.msg);
+            }
+            if (focus === '0' || !focus) {
+                $('#' + select).append('<option selected="" value="">' + name + '</option>');
+            }
+        }
+
+    </script>
+</th:block>

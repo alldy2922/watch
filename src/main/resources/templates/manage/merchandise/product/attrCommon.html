@@ -1,0 +1,69 @@
+<th:block th:fragment="attrCommon">
+    <script th:inline="javascript">
+        function loadAttr(key, value, type, isAdd){
+            let attrHtml = $('#indexAttr');
+            let indexAttr = attrHtml.val();
+            let htmlValue;
+            let htmlAddButton = ``;
+            let htmlSubButton = ``;
+            if (type === "BUILD-IN") {
+                let optionHtml = ''
+                value.split(",").forEach(function(element) {
+                    optionHtml = optionHtml + `<option value=' `+ element.trim() +`  '> `+ element.trim() +` </option>`
+                });
+                htmlValue = ` <select class="form-select multi-select" id="list-category" name="value" aria-label="Danh mục" multiple="multiple">
+                                `+optionHtml+`
+                            </select>`;
+                htmlAddButton = `<i style="font-size: 25px; cursor: pointer" class="bi bi-plus-circle" onclick="loadAttr('`+key+`', '` + value + `', '`+type+`','add')"></i>`
+                htmlSubButton = `<i style="font-size: 25px; cursor: pointer" class="bi bi-dash-circle" onclick="deleteSubAttributes('#subAttr-${indexAttr}')"></i>`
+            } else {
+                htmlValue = `<input type="` + type + `" class="form-control" name="value">`;
+                htmlAddButton = `<i style="font-size: 25px; cursor: pointer" class="bi bi-plus-circle" onclick="loadAttr('`+key+`', '', '`+type+`','add')"></i>`
+                htmlSubButton = `<i style="font-size: 25px; cursor: pointer" class="bi bi-dash-circle" onclick="deleteSubAttributes('#subAttr-${indexAttr}')"></i>`
+            }
+            if (indexAttr === "1") {
+                let item = `
+
+                    <div class="row mb-3" id="subAttr-${indexAttr}">
+                        <label class="col-sm-3 col-form-label"> `+key+` </label>
+                        <div class="col-sm-4">
+                            `+htmlValue+`
+                            <input name="name" value="`+key+`" hidden="hidden">
+                            <input name="type" value="`+type+`" hidden="hidden">
+                        </div>
+                        <div class="col-sm-2">
+                            `+htmlAddButton+`
+                        </div>
+                    </div>`
+                $('#listAttributes').append(item);
+            }else{
+                let item = `
+
+                    <div class="row mb-3" id="subAttr-${indexAttr}">
+                        <label class="col-sm-3 col-form-label"> `+key+` </label>
+                        <div class="col-sm-4">
+                            `+htmlValue+`
+                            <input name="key" value="`+key+`" hidden="hidden">
+                            <input name="type" value="`+type+`" hidden="hidden">
+                        </div>
+                        <div class="col-sm-2">
+                            `+htmlAddButton+`
+                            `+htmlSubButton+`
+                        </div>
+                    </div>`;
+                $('#listAttributes').append(item);
+            }
+            indexAttr ++;
+            attrHtml.val(indexAttr);
+            attrHtml.attr('value',indexAttr);
+        }
+        function cleanAttributes(){
+            $('#listAttributes').empty();
+            $('#indexAttr').val(1); //Clear attribute index counter
+        }
+        function deleteSubAttributes(id){
+            $(id).remove();
+        }
+    </script>
+
+</th:block>

@@ -1,0 +1,318 @@
+<form id="form-vn-post-domestic-order">
+  <div class="row pt-5">
+    <div class="col-md-6">
+      <!-- General Form Elements -->
+      <div class="card">
+        <div class="card-header">Người gửi</div>
+        <div class="card-body">
+          <input type="hidden" name="type"/>
+          <div class="row mb-3 mt-3">
+            <label for="senderName" class="col-sm-2 col-form-label form-item-required">Người gửi</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="senderName" name="senderName">
+            </div>
+          </div>
+          <div class="row mb-3 mt-3">
+            <label for="senderPhone" class="col-sm-2 col-form-label form-item-required">Số điện thoại</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="senderPhone" name="senderPhone">
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label for="senderAddress" class="col-sm-3 col-form-label">Địa chỉ chi tiết</label>
+            <div class="col-sm-9">
+              <input type="text" class="form-control" id="senderAddress" name="senderAddress">
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-md-4">
+              <select id="senderProvinceCode" name="senderProvinceCode" class="form-select">
+                <option value="">Tỉnh / Thành</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <select id="senderDistrictCode" name="senderDistrictCode" class="form-select">
+                <option value="">Quận / Huyện</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <select id="senderCommuneCode" name="senderCommuneCode" class="form-select">
+                <option value="">Phường / Xã</option>
+              </select>
+            </div>
+          </div>
+          <!--
+          <div class="row mb-3">
+            <label for="contractCode" class="col-sm-2 col-form-label">Hợp đồng</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="contractCode">
+            </div>
+          </div>
+          -->
+          <div class="row mb-3">
+            <div class="col-sm-2"></div>
+            <div class="col-sm-10">
+              <span>Hình thức thanh toán: <span class="text-danger">Thanh toán ngay</span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">Người nhận</div>
+        <div class="card-body">
+          <!--
+          <div class="input-group mb-3 mt-3">
+            <label for="contractC" class="col-sm-3 col-form-label">Hợp đồng C
+              <i class="ri-question-line text-light-emphasis" data-bs-custom-class="text-danger"
+                 data-bs-toggle="tooltip" data-bs-title="Hợp đồng thu cước nơi người nhận"></i>
+            </label>
+            <div class="input-group-text" id="contractC">
+              <input class="form-check-input mt-0" type="checkbox" value=""
+                     aria-label="Checkbox for following text input">
+            </div>
+            <input type="text" class="form-control" aria-label="Text input with checkbox">
+          </div>
+          -->
+          <div class="row mb-3">
+            <label for="receiverPhone" class="col-sm-3 col-form-label form-item-required">Số điện thoại</label>
+            <div class="col-sm-9">
+              <input type="text" class="form-control" id="receiverPhone" name="receiverPhone">
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label for="receiverName" class="col-sm-3 col-form-label form-item-required">Tên người
+              nhận</label>
+            <div class="col-sm-9">
+              <input type="text" class="form-control" id="receiverName" name="receiverName">
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label for="receiverAddress" class="col-sm-3 col-form-label form-item-required">Địa chỉ chi tiết</label>
+            <div class="col-sm-9">
+              <input type="text" class="form-control" id="receiverAddress" name="receiverAddress">
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+              <select id="receiverProvinceCode" name="receiverProvinceCode" class="form-select">
+                <option value="">Tỉnh / Thành</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <select id="receiverDistrictCode" name="receiverDistrictCode" class="form-select">
+                <option value="">Quận / Huyện</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <select id="receiverCommuneCode" name="receiverCommuneCode" class="form-select">
+                <option value="">Phường / Xã</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">Chọn dịch vụ</div>
+        <div class="card-body">
+          <div class="row mb-3">
+            <label class="col-sm-2 col-form-label form-item-required">Tên SPDV</label>
+            <div class="col-sm-10">
+              <select id="serviceCode" class="form-select" aria-label="Default select example" name="serviceCode">
+                <option value="CTN001">Tài liệu, hàng hóa tiêu chuẩn</option>
+                <option value="ETN011">Tài liệu, hàng hóa nhanh</option>
+                <option value="ETN013">Hỏa tốc</option>
+                <option value="CTN009">Thương mại điện tử đồng giá tiêu chuẩn</option>
+                <option value="ETN031">Thương mai điện tử nhanh</option>
+                <option value="ETN037">Thương mại điện tử đồng giá nhanh</option>
+                <option value="PTN001">Logistic Eco (từ 30kg) hàng nặng</option>
+              </select>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <table class="table table-bordered">
+              <thead>
+              <tr>
+                <th colspan="3" style="text-align: center">Dịch vụ công thêm</th>
+              </tr>
+              </thead>
+              <tbody id="list-service">
+              <!--
+                <tr>
+                  <th scope="row">
+                    <input name="ids" class="form-check-input gtgt" type="checkbox" value="GTG008"/>
+                  </th>
+                  <td>Khai giá</td>
+                  <td>
+                    <input type="text" class="form-control" placeholder="Số tiền khai giá">
+                  </td>
+                </tr>
+                <tr>
+                  <th scope="row">
+                    <input name="ids" class="form-check-input gtgt" type="checkbox" value="GTG015"/>
+                  </th>
+                  <td>Hóa đơn</td>
+                  <td>
+                    <input type="text" class="form-control mb-1" placeholder="Số hóa đơn">
+                    <input type="text" onfocus="(this.type='date')" onblur="(this.type='text')" class="form-control" placeholder="Ngày hóa đơn">
+                  </td>
+                </tr>
+                <tr>
+                  <th scope="row">
+                    <input name="ids" class="form-check-input" type="checkbox" value="GTG021"/>
+                  </th>
+                  <td>Phát hàng thu tiền COD</td>
+                  <td>
+                    <input type="text" class="form-control" placeholder="Tiền hàng thu hộ">
+                  </td>
+                </tr>
+                <tr>
+                  <th scope="row">
+                    <input name="ids" class="form-check-input" type="checkbox" value="GTG026"/>
+                  </th>
+                  <td>Chấp nhận tại địa chỉ</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <th scope="row">
+                    <input name="ids" class="form-check-input" type="checkbox" value="GTG067"/>
+                  </th>
+                  <td>Phát hàng 1 phần chiều đi( DOP1)</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <th scope="row">
+                    <input name="ids" class="form-check-input" type="checkbox" value="GTG068"/>
+                  </th>
+                  <td>Phát hàng 1 phần chiều đến</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <th scope="row">
+                    <input name="ids" class="form-check-input" type="checkbox" value="GTG070"/>
+                  </th>
+                  <td>Thu phí hủy đơn hàng</td>
+                  <td>
+                    <input type="text" class="form-control" placeholder="Tiền phí hủy đơn hàng">
+                  </td>
+                </tr>
+                <tr>
+                  <th scope="row">
+                    <input name="ids" class="form-check-input" type="checkbox" value="GTG071"/>
+                  </th>
+                  <td>Thu hộ phí ship</td>
+                  <td></td>
+                </tr>
+              -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <!-- General Form Elements -->
+      <div class="card">
+        <div class="card-header">Thông tin hàng hoá</div>
+        <div class="card-body">
+          <div class="row mb-3 mt-3">
+            <label for="saleOrderCode" class="col-sm-3 col-form-label">Mã đơn hàng</label>
+            <div class="col-sm-9">
+              <input type="text" class="form-control" id="saleOrderCode" name="saleOrderCode">
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label for="weight" class="col-sm-3 col-form-label form-item-required">Tổng khối lượng</label>
+            <div class="col-sm-9">
+              <input type="text" class="form-control" id="weight" name="weight" placeholder="gram">
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label for="abc" class="col-sm-3 col-form-label">Kích thước (cm)</label>
+            <div class="col-sm-9 row" id="abc">
+              <div class="col-md-4">
+                <input type="number" name="length" placeholder="Dài" class="form-control">
+              </div>
+              <div class="col-md-4">
+                <input type="number" name="width" placeholder="Rộng" class="form-control">
+              </div>
+              <div class="col-md-4">
+                <input type="number" name="height" placeholder="Cao" class="form-control">
+              </div>
+              <input type="hidden" name="vehicle" value="BO"/>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label for="contentNote" class="col-sm-3 col-form-label form-item-required">Nội dung</label>
+            <div class="col-sm-9">
+              <textarea class="form-control" id="contentNote" style="height: 50px;" name="contentNote"></textarea>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label for="bcd" class="col-sm-3 col-form-label"></label>
+            <div class="form-check col-sm-9" id="bcd" style="padding-left: 12px">
+              <input class="form-check-input" type="checkbox" id="isBroken" name="isBroken" value="1">
+              <label class="form-check-label" for="isBroken">Hàng dễ vỡ</label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">Yêu cầu thêm</div>
+        <div class="card-body">
+          <div class="row mb-3 mt-5">
+            <label class="col-sm-3 col-form-label form-item-required">Hình thức gửi hàng</label>
+            <div class="row col-sm-9">
+              <div class="col-md-5 form-check mt-2">
+                <input class="form-check-input" type="radio" name="sendType" id="true" value="1" checked="">
+                <label class="form-check-label" for="true">Thu gom tận nơi</label>
+              </div>
+              <div class="col-md-5 form-check mt-2">
+                <input class="form-check-input" type="radio" name="sendType" id="false" value="2">
+                <label class="form-check-label" for="false">Gửi hàng tại bựu cục</label>
+              </div>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label class="col-sm-3 col-form-label">Thời gian phát hàng mong muốn</label>
+            <div class="col-sm-9">
+              <select id="deliveryTime" name="deliveryTime" class="form-select">
+                <option value="S">Sáng (8h - 12h)</option>
+                <option value="C">Sáng (8h - 12h)</option>
+                <option selected="" value="N">Cả ngày (8h - 12h, 13h-17h)</option>
+              </select>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label for="deliveryInstruction" class="col-sm-3 col-form-label">Chỉ dẫn phát</label>
+            <div class="col-sm-9">
+              <textarea id="deliveryInstruction" name="deliveryInstruction" class="form-control" style="height: 100px"></textarea>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label class="col-sm-3 col-form-label"></label>
+            <div class="col-sm-9">
+              <input type="hidden" name="deliveryRequire" id="deliveryRequire">
+              <button type="button" id="deliveryRequire1" class="btn-delivery btn btn-outline-primary" onclick="addDelivery('1')">Không cho xem hàng</button>
+              <button type="button" id="deliveryRequire2" class="btn-delivery btn btn-outline-primary" onclick="addDelivery('2')">Cho xem hàng</button>
+            </div>
+          </div>
+          <!--
+          <div class="row mb-3">
+            <label class="col-form-label col-sm-3 pt-0"></label>
+            <div class="col-sm-9">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="gridCheck1">
+                <label class="form-check-label" for="gridCheck1">
+                  Lưu thông tin đơn hàng
+                  <i class="ri-question-line text-light-emphasis" data-bs-custom-class="text-danger" data-bs-toggle="tooltip" data-bs-title="Lưu thông tin hàng hóa và Yêu cầu thêm"></i>
+                </label>
+              </div>
+            </div>
+          </div>
+          -->
+        </div>
+      </div>
+    </div>
+  </div>
+</form>

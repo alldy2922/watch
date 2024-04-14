@@ -1,0 +1,198 @@
+<th:block th:fragment="homePage">
+    <!--Head banner-->
+    <div id="headBanner">
+        <div class="row mb-2">
+            <div class="col-sm-2"></div>
+            <div class="col-sm-4">
+                <div id="image-preview-head" class="img-fluid" style="position:relative; display: none"></div>
+                <input required name="urlImg" id-img-preview="image-preview-head" id="image-html-head" type="file" accept="image/*" style="display: none" onchange="showImgPreview('image-preview-head','image-html-head',this)">
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label class="col-sm-2 col-form-label">Head banner</label>
+            <div class="col-sm-10">
+                <div class="row">
+                    <div class="col-sm-1">
+                        <label style="cursor: pointer" for="image-html-head"><i style="font-size: 25px;" class="bi bi-upload"></i></label>
+                    </div>
+                    <div class="col-sm-11">
+                        <input type="text" name="link" class="form-control" placeholder="Link">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--Main banner-->
+    <div id="mainBanner">
+        <div class="row mb-2">
+            <div class="col-sm-2"></div>
+            <div class="col-sm-4">
+                <div id="image-preview-main" class="img-fluid" style="position:relative; display: none"></div>
+                <input name="urlImg" id-img-preview="image-preview-main" id="image-html-main" type="file" accept="image/*" style="display: none" onchange="showImgPreview('image-preview-main','image-html-main',this)">
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label class="col-sm-2 col-form-label">Main banner</label>
+            <div class="col-sm-10">
+                <div class="row">
+                    <div class="col-sm-1">
+                        <label style="cursor: pointer" for="image-html-main"><i style="font-size: 25px;" class="bi bi-upload"></i></label>
+                    </div>
+                    <div class="col-sm-11">
+                        <input type="text" name="link" class="form-control" placeholder="Link">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--Sub banner-->
+    <div id="subBanner">
+        <div id="listSubBanner" class="mb-3">
+            <div>
+                <div class="row mb-2">
+                    <div class="col-sm-2"></div>
+                    <div class="col-sm-4">
+                        <div id="image-preview-sub" class="img-fluid" style="position:relative; display: none"></div>
+                        <input name="urlImg" id-img-preview="image-preview-sub" id="image-html-sub" type="file" accept="image/*" style="display: none" onchange="showImgPreview('image-preview-sub','image-html-sub',this)">
+                    </div>
+                </div>
+                <div class="row">
+                    <label class="col-sm-2 col-form-label">Sub banner</label>
+                    <div class="col-sm-10">
+                        <div class="row">
+                            <div class="col-sm-1">
+                                <label style="cursor: pointer" for="image-html-sub"><i style="font-size: 25px;" class="bi bi-upload"></i></label>
+                            </div>
+                            <div class="col-sm-9">
+                                <input type="text" name="link" class="form-control" placeholder="Link">
+                            </div>
+                            <div class="col-sm-2">
+                                <i style="font-size: 25px; cursor: pointer" class="bi bi-plus-circle" onclick="addSubBanner()"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!--Promote-->
+    <div id="promote">
+        <div id="listPromote">
+            <div>
+                <div class="row mb-2">
+                    <div class="col-sm-2"></div>
+                    <div class="col-sm-4">
+                        <div id="image-preview-promote" class="img-fluid" style="position:relative; display: none"></div>
+                        <input name="urlImg" id-img-preview="image-preview-promote" id="image-html-promote" type="file" accept="image/*" style="display: none" onchange="showImgPreview('image-preview-promote','image-html-promote',this)">
+                    </div>
+                </div>
+                <div class="row">
+                    <label class="col-sm-2 col-form-label">Mục gợi ý</label>
+                    <div class="col-sm-10">
+                        <div class="row">
+                            <div class="col-sm-1">
+                                <label style="cursor: pointer" for="image-html-promote"><i style="font-size: 25px;" class="bi bi-upload"></i></label>
+                            </div>
+                            <div class="col-sm-4">
+                                <input type="text" name="name" class="form-control" placeholder="Tên">
+                            </div>
+                            <div class="col-sm-5">
+                                <input type="text" name="link" class="form-control" placeholder="Link">
+                            </div>
+                            <div class="col-sm-2">
+                                <i style="font-size: 25px; cursor: pointer" class="bi bi-plus-circle" onclick="addPromote()"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <input type="hidden" name="indexPromote" id="indexPromote" value="1"/>
+        <input type="hidden" name="indexSub" id="indexSub" value="1"/>
+    </div>
+
+
+    <script th:inline="javascript">
+        function addPromote(){
+            let index = $('#indexPromote').val();
+            let item = `<div id="promote-item${index}">
+            <div class="row mb-2">
+                <div class="col-sm-2"></div>
+                <div class="col-sm-4">
+                    <div id="image-preview-promote${index}" class="img-fluid mt-3" style="position:relative; display: none"></div>
+                    <input name="urlImg" id-img-preview="image-preview-promote${index}" id="image-html-promote${index}" type="file" accept="image/*" style="display: none" onchange="showImgPreview('image-preview-promote${index}','image-html-promote${index}',this)">
+                </div>
+            </div>
+            <div class="row">
+                <label class="col-sm-2"></label>
+                <div class="col-sm-10">
+                    <div class="row">
+                        <div class="col-sm-1">
+                            <label style="cursor: pointer" for="image-html-promote${index}"><i style="font-size: 25px;" class="bi bi-upload"></i></label>
+                        </div>
+                        <div class="col-sm-4">
+                            <input type="text" name="name" class="form-control" placeholder="Tên">
+                        </div>
+                        <div class="col-sm-5">
+                            <input type="text" name="link" class="form-control" placeholder="Link">
+                        </div>
+                        <div class="col-sm-2">
+                            <i style="font-size: 25px; cursor: pointer" class="bi bi-plus-circle" onclick="addPromote()"></i>
+                            <i style="font-size: 25px; cursor: pointer" class="bi bi-dash-circle" onclick="deletePromote('#promote-item${index}')"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>`
+            $('#listPromote').append(item);
+            index ++
+            $('#indexPromote').val(index);
+            $('#indexPromote').attr('value',index);
+        }
+        function deletePromote(id){
+            $(id).remove();
+        }
+
+        function addSubBanner(){
+            let indexSub = $('#indexSub').val();
+            let item = ` <div id="sub-banner-item${indexSub}">
+                <div class="row mb-2">
+                    <div class="col-sm-2"></div>
+                    <div class="col-sm-4">
+                        <div id="image-preview-sub${indexSub}" class="img-fluid mt-3" style="position:relative; display: none"></div>
+                        <input name="urlImg" id-img-preview="image-preview-sub${indexSub}" id="image-html-sub${indexSub}" type="file" accept="image/*" style="display: none" onchange="showImgPreview('image-preview-sub${indexSub}','image-html-sub${indexSub}',this)">
+                    </div>
+                </div>
+                <div class="row">
+                    <label class="col-sm-2"></label>
+                    <div class="col-sm-10">
+                        <div class="row">
+                            <div class="col-sm-1">
+                                <label style="cursor: pointer" for="image-html-sub${indexSub}"><i style="font-size: 25px;" class="bi bi-upload"></i></label>
+                            </div>
+                            <div class="col-sm-9">
+                                <input type="text" name="link" class="form-control" placeholder="Link">
+                            </div>
+                            <div class="col-sm-2">
+                                <i style="font-size: 25px; cursor: pointer" class="bi bi-plus-circle" onclick="addSubBanner()"></i>
+                                <i style="font-size: 25px; cursor: pointer" class="bi bi-dash-circle" onclick="deleteSubBanner('#sub-banner-item${indexSub}')"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+            $('#listSubBanner').append(item);
+            indexSub ++;
+            $('#indexSub').val(indexSub);
+            $('#indexSub').attr('value',indexSub);
+        }
+
+        function deleteSubBanner(id){
+            $(id).remove();
+        }
+    </script>
+</th:block>

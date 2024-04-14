@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{manage/layout/layout :: main-fragment(
+                                                ~{:: title},
+                                                ~{:: #css-resources},
+                                                ~{:: #js-resources},
+                                                ~{:: #main-content}
+                                               )}">
+<head>
+    <meta charset="UTF-8">
+    <title>Danh sách Phê Duyệt</title>
+
+    <th:block id="css-resources">
+    </th:block>
+
+</head>
+<body>
+<th:block id="main-content">
+    <main id="main" class="main">
+        <div class="page-title">
+            <h1>Phê Duyệt</h1>
+            <nav>
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="">Phê Duyệt</a></li>
+                    <li class="breadcrumb-item active"><a href="./review/list"></a>Danh sách</li>
+                </ol>
+            </nav>
+        </div>
+
+        <section class="section">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <br>
+                            <div class="datatable-top">
+                                <div class="common-search">
+                                    <div class="search-bar">
+                                        <form class="search-form d-flex align-items-center" method="get" action="#"
+                                              id="frm">
+<!--                                            <input type="text" id="query" name="query"-->
+<!--                                                   placeholder="Theo tên Hãng" title="Enter search keyword">-->
+<!--                                            <button type="submit" title="Search"><i class="bi bi-search"></i></button>-->
+                                        </form>
+                                    </div>
+                                </div>
+                                <div style="float: right">
+                                    <button type="button" class="btn btn-success btn-sm"
+                                            onclick="approval(1)">Chấp thuận
+                                    </button>
+                                    <button type="button" class="btn btn-danger btn-sm"
+                                            onclick="approval(2)">Từ chối
+                                    </button>
+                                </div>
+                            </div>
+
+                            <table class="table table-striped">
+                                <thead>
+                                <tr>
+                                    <th scope="row">
+                                        <label>
+                                            <input class="check-all-remove form-check-input" type="checkbox"
+                                                   id="checkbox_all"
+                                                   onclick="allCheck()">
+                                        </label>
+                                    </th>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Loại phê duyệt</th>
+                                    <th scope="col">Tóm tắt</th>
+                                    <th scope="col">Người tạo</th>
+                                    <th scope="col">Ngày yêu cầu</th>
+                                    <th scope="col">Status</th>
+                                </tr>
+                                </thead>
+                                <tbody id="data-table">
+
+                                </tbody>
+                            </table>
+                            <th:block th:replace="~{manage/fragments/pagination :: ${pagination}}"></th:block>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+</th:block>
+
+<th:block id="js-resources">
+    <script th:inline="javascript">
+        let mapStatus = new Map();
+        mapStatus.set(0, {name: 'PENDING', color: 'bg-warning'});
+        mapStatus.set(1, {name: 'APPROVED', color: 'bg-success'});
+        mapStatus.set(2, {name: 'REJECTED', color: 'bg-danger'});
+        mapStatus.set(3, {name: 'PROCESSING', color: 'bg-info'});
+        $(document).ready(function () {
+            loadDataTable(1);
+        });
+        const pageParam = {
+            'formId': 'frm',
+            'dataListUrl': apiDomain + API.getRequestUrl(),
+            'updateStatusUrl': apiDomain + API.getRequestUrl() + "/status",
+            'deleteUrl': apiDomain + API.getRequestUrl(),
+        };
+        //build list data
+        //default name: getDataTable(data)
+        function getDataTable(data) {
+            let listData = '';
+            data.forEach((element, index) => {
+                let checkBox = '';
+                if(element.status === 0){
+                    checkBox = '<input name="ids" class="check-box-remove form-check-input" type="checkbox" value="' + element.id + '">';
+                }
+                listData += '<tr>' +
+                    '                  <th>' +
+                    checkBox +
+                    '                  </th>' +
+                    '                  <th scope="row">' + rowOrder(index) + '</th>' +
+                    '                  <td>' + element.typeName + '</td>' +
+                    '                  <td>' + element.title + " " + element.summary + '</td>' +
+                    '                  <td>' + element.createdBy + '</td>' +
+                    '                  <td>' + convertDateToStringDateTime(element.deadline) + '</td>' +
+                    '                  <td><span id="status-template-' + element.id + '" onclick="#" style="cursor: pointer" class="badge rounded-pill ' + mapStatus.get(parseInt(element.status)).color + '">' + mapStatus.get(parseInt(element.status)).name + '</span></td>' +
+                    '                </tr>'
+
+
+            });
+            return listData;
+        }
+
+        $("#query").on("keyup", function () {
+            loadDataTable(1);
+        });
+
+        function approval(status) {
+            const valueCheckboxes = document.querySelectorAll('.check-box-remove:checked')
+            if (valueCheckboxes.length === 0) {
+                return alert("Hãy chọn hàng")
+            } else {
+                if (window.confirm("Bạn có chắc chắn ?")) {
+                    let ids = Array.from(valueCheckboxes, e => parseInt($(e).val()))
+                    let url = status === 1 ? "/status/approval" : "/status/reject"
+                    let res = ajaxCall(apiDomain + API.getRequestUrl() + url, {ids: ids}, "PATCH");
+                    if (res.status === "success") {
+                        loadDataTable(currentPage);
+                    } else {
+                        alert(res.msg);
+                    }
+                }
+            }
+        }
+    </script>
+</th:block>
+</body>
+</html>

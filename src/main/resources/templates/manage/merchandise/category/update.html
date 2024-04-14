@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{manage/layout/layout :: main-fragment(
+                                                ~{:: title},
+                                                ~{:: #css-resources},
+                                                ~{:: #js-resources},
+                                                ~{:: #main-content}
+                                               )}">
+<head>
+    <meta charset="UTF-8">
+    <title>Cập nhật Danh mục</title>
+</head>
+<body>
+<th:block id="main-content">
+    <main id="main" class="main">
+        <div class="page-title">
+            <h1>Cập nhật Danh mục</h1>
+            <nav>
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="list.html">Danh mục</a></li>
+                    <li class="breadcrumb-item active"><a href="update_bak.html"></a>Cập nhật</li>
+                </ol>
+            </nav>
+        </div>
+
+        <section class="section">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title"></h5>
+                            <!-- General Form Elements -->
+                            <form id="form">
+                                <div class="row mb-3">
+                                    <label class="col-sm-2 col-form-label">Tên Danh mục</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" name="name" id="name" class="form-control"
+                                               placeholder="Sản phẩm thời trang">
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label class="col-sm-2 col-form-label">Cấp độ danh mục</label>
+                                    <div class="col-sm-10">
+                                        <select class="form-select " name="level" id="level"
+                                            aria-label="Default select example" onchange="changeLevel(this)" disabled>
+                                            <option selected="" value=1>Cấp độ 1</option>
+                                            <option value=2>Cấp độ 2</option>
+                                            <option value=3>Cấp độ 3</option>
+                                            <option value=4>Cấp độ 4</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label class="col-sm-2 col-form-label">Nổi bật</label>
+                                    <div class="col-sm-10">
+                                        <select class="form-select " name="hasTop" id="hasTop"
+                                                aria-label="">
+                                            <option selected="" value="0">Không</option>
+                                            <option value=1>Có</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label class="col-sm-2 col-form-label">Thứ tự hiện thị</label>
+                                    <div class="col-sm-10">
+                                        <input type="number" name="sort" id="sort" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label class="col-sm-2 col-form-label pt-0">Danh mục cha</label>
+                                    <div class="col-sm-10">
+                                        <select class="form-select " name="parent" id="parent"
+                                                aria-label="Danh mục cấp độ cao hơn">
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label class="col-sm-2 col-form-label pt-0">Icon URL</label>
+                                    <div class="col-sm-10">
+
+                                        <input type="text" name="iconUrl" id="iconUrl" class="form-control"
+                                               placeholder="Đường đãn icon">
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label class="col-sm-2 col-form-label">Title Page (SEO)</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" name="linkPage" id="linkPage" class="form-control"
+                                               placeholder="Sản phẩm thời trang">
+                                    </div>
+                                </div>
+
+                                <div id="html-data">
+
+                                </div>
+                                <div id="html-attr-data">
+                                    <th:block th:switch="${type}">
+                                        <th:block th:case="*">
+                                            <th:block
+                                                    th:replace="~{/manage/merchandise/category/attributeCommon}"></th:block>
+                                        </th:block>
+                                    </th:block>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <label class="col-sm-2 col-form-label">Url hiện thị</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" name="url" id="url" class="form-control">
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <label class="col-sm-2 col-form-label pt-0">Trạng thái</label>
+                                    <div class="col-sm-10">
+                                        <select class="form-select " name="status" id="status"
+                                                aria-label="Default select example">
+                                            <option selected="" value=1>Sử dụng</option>
+                                            <option value=0>Không sử dụng</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label class="col-sm-2 col-form-label"></label>
+                                    <div class="col-sm-10">
+                                        <button type="button" class="btn btn-primary" onclick="update()">Cập nhập</button>
+                                    </div>
+                                </div>
+                            </form>
+                            <!-- General Form Elements -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+    </main>
+</th:block>
+
+<th:block id="js-resources">
+    <script th:inline="javascript">
+        const id = [[${id}]];
+        const form = $("#form");
+        const pageParam = {
+            'formId': 'frm',
+            'dataListUrl': apiDomain + API.getMerchandiseCategoryUrl(),
+            'deleteUrl': apiDomain + API.getMerchandiseCategoryUrl(),
+            'addUrl': apiDomain + API.getMerchandiseCategoryUrl(),
+            'updateStatusUrl': apiDomain + API.getMerchandiseCategoryUrl() + "/status",
+            'getCategories': apiDomain + API.getMerchandiseCategoryUrl(),
+
+        };
+        $(document).ready(function () {
+            getById();
+            $("#list-category").on("change", function () {
+                loadAttributes($(this).val())
+            });
+        });
+        form.validate({
+            rules: {
+                name: {
+                    required: true,
+                    maxlength: 50
+                },
+                level: {
+                    required: true
+                },
+                sort: {
+                    required: true
+                },
+                linkPage: {
+                    required: true
+                },
+                url: {
+                    required: true
+                },
+                parent: {
+                    required: true,
+                    notEqualToZero: true
+                }
+            },
+            messages: {
+                name: "Vui lòng nhập tên",
+                level: "Vui lòng nhập cấp độ",
+                sort: "Vui lòng nhập Thứ tự hiện thị",
+                linkPage: "Vui lòng nhập Title Page (SEO)",
+                url: "Vui lòng nhập Url hiện thị",
+                parent: "Vui lòng nhập danh mục cha"
+
+            }
+        });
+        $.validator.addMethod("notEqualToZero", function(value, element) {
+            return value !== "0" || value !== 0 || $("#level option:selected").val() !== 1;
+        }, "Vui lòng nhập danh mục cha");
+        function getById(){
+            let res = ajaxCall(apiDomain + API.getMerchandiseCategoryUrl(id), '', 'GET', false);
+            if(res.status==="success") {
+                $("#name").val(res.data.name);
+                $("#hasTop").val(res.data.hasTop).change();
+                $("#sort").val(res.data.sort);
+                $("#level").val(res.data.level).change();
+                changeLevel();
+                $("#html-data").html(res.data.htmlData);
+                $("#parent").val(res.data.parent).change();
+                $("#linkPage").val(res.data.linkPage);
+                $("#url").val(res.data.url);
+                $("#status").val(res.data.status);
+                $("#iconUrl").val(res.data.iconUrl);
+                // loadDataSelect("parent", pageParam.getCategories, res.data.parent, "Danh mục cấp độ cao hơn");
+
+                loadAttributes(JSON.parse(res.data.attributes).listAttributes);
+            }
+        }
+
+        function update(){
+            if (form.valid()) {
+                let param = {};
+                let bannerJson = buildJson("BANNER");
+                let bannerPcJson = buildJson("BANNER_PC");
+                if (!bannerJson || !bannerPcJson) {
+                    return false;
+                }
+                param['id'] = id;
+                param['name'] = $('#name').val();
+                param['level'] = $("#level option:selected").val();
+                param['hasTop'] = $("#hasTop option:selected").val();
+                param['sort'] = $('#sort').val();
+                param['parent'] = $("#parent option:selected").val();
+                param['linkPage'] = $('#linkPage').val();
+                param['banner'] = JSON.stringify(bannerJson);
+                param['bannerPc'] = JSON.stringify(bannerPcJson);
+                param['url'] = $('#url').val();
+                param['status'] = $("#status option:selected").val();
+                param['attributes'] = JSON.stringify(buildJsonAttributes(("ATTRIBUTES")));
+                param['htmlData'] = $('#html-data').html();
+                param['iconUrl'] = $('#iconUrl').val();
+
+                let res = ajaxCall(pageParam.addUrl, param, 'PATCH');
+                if (res.status === "success") {
+                    alert("Cập nhập thành công");
+                    $(location).attr('href', './list');
+                }else {
+                    alert(res.msg);
+                }
+            }
+        }
+        $(document).on("change", "select[name='type']", function() {
+            const value = $(this).val();
+            var div = $(this).closest(".row").find("div[name='choices']");
+            if (value === 'BUILD-IN'){
+                document.getElementsByName($(this).closest(".row").find("input[name='value']").attr("name")).forEach((value) => {
+                    new Choices(value);
+                })
+                div.show()
+            }else{
+                document.getElementsByName($(this).closest(".row").find("input[name='value']").attr("name")).forEach((value) => {
+                    var choices = value._choices;
+                    if (choices) {
+                        choices.destroy();
+                    }
+                    $(value).val('');
+                    div.hide()
+                });
+            }
+        });
+        function changeLevel(){
+            let level = $("#level option:selected").val();
+            if (!level){
+                $('#parent').prop('disabled', true);
+            }else{
+                if(level == 1){
+                    $('#parent').prop('disabled', true);
+                }else{
+                    $('#parent').prop('disabled', false);
+                }
+                loadDataSelect("parent", pageParam.getCategories, '', "Danh mục cấp độ cao hơn","level="+(level-1));
+            }
+        }
+    </script>
+</th:block>
+</body>
+</html>

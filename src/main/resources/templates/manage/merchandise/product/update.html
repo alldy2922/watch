@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{manage/layout/layout :: main-fragment(
+                                                ~{:: title},
+                                                ~{:: #css-resources},
+                                                ~{:: #js-resources},
+                                                ~{:: #main-content}
+                                               )}">
+<head>
+  <meta charset="UTF-8">
+  <title>Cập nhật Sản Phẩm</title>
+
+  <th:block id="css-resources">
+  </th:block>
+
+</head>
+<body>
+<th:block id="main-content">
+  <main id="main" class="main">
+    <div class="page-title">
+      <h1>Thêm Sản Phẩm</h1>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="list.html">Sản Phẩm</a></li>
+        <li class="breadcrumb-item active"><a href="update.html"></a>Cập nhật</li>
+      </ol>
+    </div>
+
+    <section class="section">
+      <div class="row">
+        <form id="form">
+          <div class="col-lg-7">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title"></h5>
+                <div class="row mb-3">
+                  <label class="col-sm-3 col-form-label">Tên Hàng Hóa</label>
+                  <div class="col-sm-9">
+                    <input type="text" class="form-control" name="name" id="name">
+                  </div>
+                </div>
+                <div id="listCategory">
+                  <div class="row mb-3">
+                    <label class="col-sm-3 col-form-label">Danh mục</label>
+                    <div class="col-sm-9">
+                      <div class="row">
+                        <div class="col-sm-9">
+                          <select class="form-select" id="list-category" name="categories"
+                                  aria-label="Danh mục">
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <th:block th:replace="~{/manage/merchandise/product/productCommon.html}"></th:block>
+                <div id="listBrand">
+                  <div class="row mb-3">
+                    <label class="col-sm-3 col-form-label">Nhãn hàng</label>
+                    <div class="col-sm-9">
+                      <div class="row">
+                        <div class="col-sm-9">
+                          <select class="form-select" id="list-brand" name="brands"
+                                  aria-label="Nhãn hàng">
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <label class="col-sm-3 col-form-label">Giá niêm yết </label>
+                  <div class="col-sm-5">
+                    <input type="number" class="form-control" name="price" id="price">
+                  </div>
+                  <div class="col-sm-4 offset-sm-0">
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" id="isStop">
+                      <label class="form-check-label" for="isStop">
+                        Tạm dừng hoạt động
+                      </label>
+                    </div>
+                  </div>
+                </div>
+                <div class="row margin-bottom mb-3 ">
+                  <label class="col-sm-3 col-form-label">Thumbnail Pc</label>
+                  <div class="col-sm-3">
+                    <div id="image-preview-pc"
+                         style="position:relative; width:250px; height:250px; display: none">
+                    </div>
+                    <label style="cursor: pointer" for="imagePc"><i style="font-size: 25px;"
+                                                                    class="bi bi-upload"></i></label>
+                    <input name="fileImage" id="imagePc" type="file" accept="image/*"
+                           style="display: none"
+                           onchange="showImgPreview('image-preview-pc','imagePc',this)">
+                  </div>
+                </div>
+                <div class="row margin-bottom mb-3 ">
+                  <label class="col-sm-3 col-form-label">Thumbnail Mobile</label>
+                  <div class="col-sm-3">
+                    <div id="image-preview-mo"
+                         style="position:relative; width:250px; height:250px; display: none">
+                    </div>
+                    <label style="cursor: pointer" for="imageMo"><i style="font-size: 25px;"
+                                                                    class="bi bi-upload"></i></label>
+                    <input name="fileImage" id="imageMo" type="file" accept="image/*"
+                           style="display: none"
+                           onchange="showImgPreview('image-preview-mo','imageMo',this)">
+                  </div>
+                </div>
+                <div id="html-image-data">
+
+                </div>
+                <div class="row mb-3">
+                  <label class="col-sm-3 col-form-label"></label>
+                  <div class="col-sm-4 offset-sm-0">
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" id="isBestSale">
+                      <label class="form-check-label" for="isNew">
+                        Bán chạy
+                      </label>
+                    </div>
+                  </div>
+                  <div class="col-sm-4 offset-sm-0">
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" id="isNew">
+                      <label class="form-check-label" for="isNew">
+                        Sản phẩm mới
+                      </label>
+                    </div>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <label class="col-sm-3 col-form-label pt-0">Đơn vị</label>
+                  <div class="col-sm-5">
+                    <select class="form-select " name="statusHtml"
+                            aria-label="Đơn vị" id="unit">
+                      <option selected="" value="0">Thùng</option>
+                      <option value="1">Cái</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <label class="col-sm-3 col-form-label">Trọng lượng</label>
+                  <div class="col-sm-9">
+                    <input type="number" class="form-control" name="weight" id="weight">
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <label class="col-sm-3 col-form-label">Thông tin sản phẩm</label>
+                  <div class="col-sm-9">
+                    <textarea type="text" class="form-control" name="info" id="info" style="height: 100px;"></textarea>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <label class="col-sm-3 col-form-label">Thứ tự hiện thị</label>
+                  <div class="col-sm-9">
+                    <input type="number" class="form-control" name="sort" id="sort">
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <label class="col-sm-3 col-form-label">Thông tin ưu đãi</label>
+                  <div class="col-sm-9">
+                    <input type="text" class="form-control" name="preferential" id="preferential">
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <label class="col-sm-3 col-form-label">Sản phẩm <br> trên shopee</label>
+                  <div class="col-sm-9">
+                    <input type="text" class="form-control" name="shoppeLink" id="shoppeLink"
+                           placeholder="Link shopee shop">
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <label class="col-sm-3 col-form-label">Sản phẩm trên tiktok</label>
+                  <div class="col-sm-9">
+                    <input type="text" class="form-control" name="tiktokLink"  id="tiktokLink"
+                           placeholder="Link Tiktok shop">
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <label class="col-sm-3 col-form-label">QR code<br>(Link sản phẩm)</label>
+                  <div class="col-sm-3">
+                    <div id="image-preview-qr"
+                         style="position:relative; width:250px; height:250px; display: none">
+                    </div>
+                    <label style="cursor: pointer" for="imageQr"><i style="font-size: 25px;"
+                                                                    class="bi bi-upload"></i></label>
+                    <input name="fileImageQr" id="imageQr" type="file" accept="image/*"
+                           style="display: none"
+                           onchange="showImgPreview('image-preview-qr','imageQr',this)">
+                  </div>
+                </div>
+
+                <div class="row mb-3">
+                  <div class="col-sm-10 offset-sm-2">
+                  </div>
+                  <div class="row mb-3">
+                    <label class="col-sm-3 col-form-label">Trạng thái</label>
+                    <div class="col-sm-5">
+                      <select class="form-select " name="status" id="status"
+                              aria-label="Default select example">
+                        <option selected="" value=1>Sử dụng</option>
+                        <option value=0>Không sử dụng</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="card-body">
+                  <h5 class="card-title">Đặc điểm sản phẩm</h5>
+                </div>
+                <div id="html-attributes-data">
+                </div>
+
+                <div class="row mb-3">
+                  <label class="col-sm-3 col-form-label"></label>
+                  <div class="row mb-3">
+                    <label class="col-sm-2 col-form-label"></label>
+                    <div class="col-sm-10">
+                      <button type="button" class="btn btn-primary" onclick="update()">Cập nhật</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </section>
+  </main>
+</th:block>
+
+<th:block id="js-resources">
+  <script th:inline="javascript">
+    const id = [[${id}]];
+    const form = $("#form");
+
+    $(document).ready(function () {
+      getById();
+
+    });
+    const pageParam = {
+      'formId': 'frm',
+      'dataListUrl': apiDomain + API.getMerchandiseProductUrl(),
+      'deleteUrl': apiDomain + API.getMerchandiseProductUrl(),
+      'updateStatusUrl': apiDomain + API.getMerchandiseProductUrl() + "/status",
+      'getCategories': apiDomain + API.getMerchandiseCategoryUrl(),
+      'getBrands': apiDomain + API.getMerchandiseBrandUrl(),
+      'add': apiDomain + API.getMerchandiseProductUrl()
+    };
+    form.validate({
+      rules: {
+        name: {
+          required: true,
+          maxlength: 255
+        },
+        price:{
+          required: true
+        },
+        sort:{
+          required: true
+        }
+      },
+      messages: {
+        name: "Vui lòng nhập tên và tên < 255 ký tự",
+        price: "Vui lòng nhập Giá niêm yết",
+        sort: "Vui lòng nhập Thứ tự hiện thị"
+      }
+    });
+
+    function update(){
+      if (form.valid()) {
+        let param = {};
+        let categoryIds = getIdByIdElement("listCategory").toString();
+        let brandIds = getIdByIdElement("listBrand").toString();
+        param['id'] = id;
+        param['idCategory'] = categoryIds;
+        param['idBrand'] = brandIds;
+        param['name'] = $('#name').val();
+        param['idCategory'] = categoryIds;
+        param['idBrand'] = brandIds;
+        param['price'] = $('#price').val();
+        param['isStop'] = document.getElementById("isStop").checked? 1 : 0;
+        param['unit'] = $("#unit option:selected").val();
+        param['weight'] = $('#weight').val();
+        param['info'] = $('#info').val();
+        param['preferential'] = $('#preferential').val();
+        param['status'] = $("#status option:selected").val();
+        param['attributes'] = JSON.stringify(buildJson("ATTRIBUTES"));
+        param['image'] = JSON.stringify(buildJson("IMAGE"));
+        param['isBestSale'] = document.getElementById("isBestSale").checked ? 1 : 0;
+        param['isNew'] = document.getElementById("isNew").checked? 1 : 0;
+        param['tiktokLink'] = $('#tiktokLink').val();
+        param['shoppeLink'] = $('#shoppeLink').val();
+        param['imageQr'] = $('#imageQr').val();
+        param['sort'] = $('#sort').val();
+        param['thumbnailPc'] = $('#image-preview-pc-common').attr('src')
+        param['thumbnailMo'] = $('#image-preview-mo-common').attr('src')
+        param['htmlImageData'] = $('#html-image-data').html();
+        param['htmlAttributesData'] = $('#html-attributes-data').html();
+
+        let res = ajaxCall(pageParam.add, param, 'PATCH');
+        if (res.status === "success") {
+          alert("Cập nhật thành công");
+          $(location).attr('href', './list');
+        }else {
+          alert(res.msg);
+        }
+      }
+    }
+    function getIdByIdElement(idElement){
+      const categories = [];
+      const selects = document.getElementById (idElement).querySelectorAll ("select");
+      for (let i = 0; i < selects.length; i++) {
+        const value = selects [i].value;
+        categories.push (value);
+      }
+      return categories;
+    }
+    function getById(){
+      let res = ajaxCall(apiDomain + API.getMerchandiseProductUrl(id), '', 'GET', false);
+      if(res.status==="success") {
+        $("#name").val(res.data.name);
+        $("#price").val(res.data.price);
+        $("#weight").val(res.data.weight);
+        $("#info").val(res.data.info);
+        $("#preferential").val(res.data.preferential);
+        $("#unit").val(res.data.unit).change();
+        $("#status").val(res.data.status);
+        $("#html-image-data").html(res.data.htmlImageData);
+        $("#html-attributes-data").html(res.data.htmlAttributesData);
+        $("#isBestSale").prop('checked',res.data.isBestSale+'' ==='1');
+        $("#isNew").prop('checked',res.data.isNew+'' ==='1');
+        $("#tiktokLink").val(res.data.tiktokLink);
+        $("#shoppeLink").val(res.data.shoppeLink);
+        $("#imageQr").val(res.data.imageQr);
+        $("#sort").val(res.data.sort);
+        $("#isStop").prop('checked',res.data.isStop+'' ==='1');
+        $('#image-preview-pc').attr("src", res.data.thumbnailPc);
+        $('#image-preview-mo').attr("src", res.data.thumbnailMo);
+
+
+        loadDataSelect("list-category", pageParam.getCategories, res.data.idCategory, "Danh mục");
+        loadDataSelect("list-brand", pageParam.getBrands, res.data.idBrand, "Nhãn hàng");
+      }else {
+        alert(res.msg);
+        $(location).attr('href', './list');
+      }
+    }
+    function loadDataSelect(select, url, focus, name) {
+      let param = 'enabledPage=false&status=1';
+      let res = ajaxCall(url, param, 'GET');
+      if (res.status === 'success') {
+        res.data.forEach((object) => {
+          if (focus+'' === object.id+'') {
+            $('#' + select).append('<option value=' + object.id + ' selected>' + object.name + '</option>');
+          } else {
+            $('#' + select).append('<option value=' + object.id + '>' + object.name + '</option>');
+          }
+        });
+      } else {
+        alert(res.msg);
+      }
+      if (focus + '' === '0') {
+        $('#' + select).append('<option value=' + 0 + ' selected>' + name + '</option>');
+      }
+    }
+  </script>
+</th:block>
+</body>
+</html>

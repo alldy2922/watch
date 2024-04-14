@@ -1,0 +1,17 @@
+<th:block th:fragment="pagination">
+  <div class="datatable-bottom">
+    <div class="datatable-dropdown">
+      <label> Hiển thị:
+        <select class="datatable-selector" id="popup-page-size">
+          <option value="5" selected="">5</option>
+          <option value="10">10</option>
+          <option value="15">15</option>
+          <option value="20">20</option>
+          <option value="25">25</option>
+        </select>
+      </label>
+    </div>
+
+    <div id="data-popup-pagination"></div>
+  </div>
+</th:block>

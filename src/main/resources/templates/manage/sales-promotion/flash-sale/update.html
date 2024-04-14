@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{manage/layout/layout :: main-fragment(
+                                                ~{:: title},
+                                                ~{:: #css-resources},
+                                                ~{:: #js-resources},
+                                                ~{:: #main-content}
+                                               )}">
+<head>
+  <meta charset="UTF-8">
+  <title>Cập nhật Flash Sale</title>
+  <th:block id="css-resources">
+  </th:block>
+
+</head>
+<body>
+<th:block id="main-content">
+  <main id="main" class="main">
+
+    <div class="page-title">
+      <h1>Cập nhật Flash Sale</h1>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="list.html">Flash Sale</a></li>
+        <li class="breadcrumb-item active"><a href="update.html"></a>Cập nhật</li>
+      </ol>
+    </div>
+
+    <section class="section">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title"></h5>
+              <form id="form">
+                <div class="row mb-3">
+                  <label class="col-sm-2 col-form-label">Tên</label>
+                  <div class="col-sm-10">
+                    <input type="text" name="name" id="name" class="form-control">
+                  </div>
+                </div>
+                <!--Image-->
+                <div class="row mb-3">
+                  <label class="col-sm-2 col-form-label">Banner</label>
+                  <div class="col-sm-10">
+                    <div id="image-preview" style="position:relative; width:250px; height:250px; display: none">
+                    </div>
+                    <label style="cursor: pointer" for="image"><i style="font-size: 25px;" class="bi bi-upload"></i></label>
+                    <input name="fileImage" id="image" type="file" accept="image/*" style="display: none" onchange="showImgPreview('image-preview','image',this)">
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <label class="col-sm-2 col-form-label">Ngày bắt đầu</label>
+                  <div class="col-sm-10">
+                    <input type="datetime-local" class="form-control" name="startDate" id="startDate">
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <label class="col-sm-2 col-form-label">Ngày kết thúc</label>
+                  <div class="col-sm-10">
+                    <input type="datetime-local" class="form-control" name="endDate" id="endDate" disabled>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <label class="col-sm-2 col-form-label pt-0">Trạng thái</label>
+                  <div class="col-sm-10">
+                    <select class="form-select " name="status" id="status" aria-label="Default select example">
+                      <option selected="" value="1">Sử dụng</option>
+                      <option value="0">Không sử dụng</option>
+                    </select>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="card">
+            <div class="card-body">
+              <br>
+              <div class="datatable-top">
+                <div style="float: right">
+                  <i style="font-size: 25px; cursor: pointer" class="bi bi-plus-circle" onclick="productAdd()"></i>
+                </div>
+              </div>
+              <table class="table table-striped">
+
+                <thead>
+                <tr>
+                  <th scope="col">Sản Phẩm</th>
+                  <th scope="col">Giá khuyễn mãi</th>
+                  <th scope="col">Số lượng bán</th>
+                  <th scope="col">Ngày bắt đầu</th>
+                  <th scope="col">Ngày kết thúc</th>
+                  <th scope="col">khuyễn mãi khác</th>
+                  <th scope="col">Sử dụng</th>
+                </tr>
+                </thead>
+                <tbody id="data-table">
+                <input type="hidden" name="indexProduct" id="indexProduct" value="1"/>
+                </tbody>
+              </table>
+              <div class="row mb-3">
+                <label class="col-sm-2 col-form-label"></label>
+                <div class="col-sm-12 text-center">
+                  <button type="button" class="btn btn-primary" id="btn-update" onclick="update()">Cập nhật</button>
+                  <button type="button" class="btn btn-success" onclick="list()">Danh sách</button>
+                  <button type="button" class="btn btn-success" id="btn-progress" hidden="hidden">Đang diễn ra</button>
+                  <button type="button" class="btn btn-outline-success" id="btn-progress-detail" onclick="viewDetails()" hidden="hidden">Xem chi tiết</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</th:block>
+<th:block id="js-resources">
+  <script th:inline="javascript">
+    const form = $("#form");
+    const id = [[${id}]];
+    $(document).ready(function () {
+      getById();
+    });
+    function update() {
+      if (form.valid()) {
+        let param = {};
+        param['id'] = id;
+        param['name'] = $('#name').val();
+        param['startDate'] = $('#startDate').val();
+        param['endDate'] = $('#endDate').val();
+        param['status'] = $("#status option:selected").val();
+        let imageBannerUrl = document.querySelector('input[id=image]').files[0];
+        param['imgBanner'] = imageBannerUrl ? uploadFile(imageBannerUrl) : '';
+
+        if (validateTableInputs()){
+          param['products'] = listProduct();
+          let res = ajaxCall(apiDomain + API.getSalesPromotionFlashSaleUrl(), param, 'PATCH');
+          if (res.status === "success") {
+            alert("Cập nhật thành công");
+            reload();
+          } else {
+            alert(res.msg);
+          }
+        }
+      }
+    }
+    function getById(){
+      let res = ajaxCall(apiDomain + API.getSalesPromotionFlashSaleUrl(id), '', 'GET', false);
+      if(res.status==="success") {
+        $("#name").val(res.data.name);
+        $('#startDate').val(res.data.startDate)
+        $('#endDate').val(res.data.endDate)
+        $("#status").val(res.data.status).change();
+        $("#imgBanner").val(res.data.status).change();
+        if (res.data.imgBanner){
+          addImgByUrl('image-preview',res.data.imgBanner, 'imgPreviewOld');
+          showImgPreview('image-preview','image',$("#image"))
+        }
+        res.data.products.forEach((obj)=>{
+          loadDataTable(obj);
+        })
+        disabledUpdateButton(res.data.startDate, res.data.endDate, (res.data.approveStatus === 1));
+
+      }
+    }
+    function disabledUpdateButton(startDate, endDate, isApproval){
+      let now = new Date();
+      startDate = new Date(startDate);
+      endDate = new Date(endDate);
+
+      if((now >= startDate && now <= endDate)|| isApproval ){
+        document.getElementById("btn-update").disabled = true;
+        document.getElementById("btn-progress").removeAttribute("hidden");
+        document.getElementById("btn-progress-detail").removeAttribute("hidden");
+      } else {
+        document.getElementById("btn-update").disabled = false;
+      }
+    }
+    function viewDetails(){
+      $(location).attr('href', '/admin/sales-promotion/flash-sale/progress-detail?id=' + id);
+    }
+  </script>
+  <th:block th:replace="~{/manage/sales-promotion/flash-sale/flashSaleCommon.html}"></th:block>
+  <th:block th:replace="~{/manage/sales-promotion/flash-sale/ajaxFlashSaleCommon.html}"></th:block>
+</th:block>
+</body>
+</html>

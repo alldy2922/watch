@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html"
+      th:replace="~{manage/layout/layout :: main-fragment(
+                                                ~{:: title},
+                                                ~{:: #css-resources},
+                                                ~{:: #js-resources},
+                                                ~{:: #main-content}
+                                               )}">
+<head>
+  <meta charset="UTF-8">
+  <title>Tạo đơn lẻ - Vietnam Post</title>
+
+  <th:block id="css-resources">
+    <style>
+      .h-64 {
+        height: 16rem;
+      }
+
+      .border-2 {
+        border-width: 2px;
+      }
+
+      .border-gray-300 {
+        --tw-border-opacity: 1;
+        border-color: rgb(209 213 219/var(--tw-border-opacity));
+      }
+
+      .bg-gray-50 {
+        --tw-bg-opacity: 1;
+        background-color: rgb(249 250 251/var(--tw-bg-opacity));
+      }
+
+      .text-gray-500 {
+        --tw-text-opacity: 1;
+        color: rgb(107 114 128/var(--tw-text-opacity));
+      }
+
+      .border-dashed {
+        border-style: dashed;
+      }
+
+      .rounded-lg {
+        border-radius: .5rem;
+      }
+
+      .w-8 {
+        width: 2rem;
+      }
+
+      .h-8 {
+        height: 2rem;
+      }
+
+      .cursor-pointer {
+        cursor: pointer;
+      }
+
+      .text-xs {
+        font-size: .75rem;
+        line-height: 1rem;
+      }
+
+      .hide {
+        display: none;
+      }
+
+      .ant-table-thead {
+        color: #266294 !important;
+      }
+
+      thead {
+        display: table-header-group;
+        vertical-align: middle;
+        border-color: inherit;
+        background-color: #ffe79b;
+      }
+
+      .ant-table-tbody > tr.ant-table-placeholder {
+        text-align: center;
+      }
+
+      .ant-table-cell {
+        font-size: 14px !important;
+      }
+
+      .ant-pro-footer-bar {
+        position: fixed;
+        right: 0;
+        bottom: 0;
+        z-index: 99;
+        display: flex;
+        align-items: center;
+        width: 100%;
+        padding: 0 24px;
+        line-height: 44px;
+        background: #fff;
+        border-top: 1px solid #f0f0f0;
+        box-shadow: 0 -6px 16px -8px rgba(0,0,0,.08),0 -9px 28px 0 rgba(0,0,0,.05),0 -12px 48px 16px rgba(0,0,0,.03);
+        transition: width .3s cubic-bezier(.645,.045,.355,1);
+        padding-bottom: 15px;
+      }
+
+      .ant-pro-footer-bar-left {
+        flex: 1 1;
+      }
+
+      .ant-space-align-center {
+        align-items: center;
+      }
+
+      .ant-space {
+        display: inline-flex;
+      }
+
+      .g-card-container {
+        width: 200px;
+      }
+
+      .g-card-container {
+        display: flex;
+        border-right: 1px solid #eee;
+      }
+
+      .g-card-icon {
+        top: calc(50% - 10px);
+        width: 40px;
+        height: 100%;
+        margin-top: 10px;
+        font-size: 30px;
+        text-align: center;
+      }
+
+      .ant-btn {
+        line-height: 1.5715;
+        position: relative;
+        display: inline-block;
+        font-weight: 400;
+        white-space: nowrap;
+        text-align: center;
+        background-image: none;
+        box-shadow: 0 2px 0 rgba(0,0,0,.015);
+        cursor: pointer;
+        transition: all .3s cubic-bezier(.645,.045,.355,1);
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        touch-action: manipulation;
+        height: 32px;
+        padding: 4px 15px;
+        font-size: 14px;
+        border-radius: 3px;
+        font-size: .9rem!important;
+        color: #000;
+        border: 1px solid #bfbfbf;
+        background: #fff;
+      }
+
+      .height-btn1 {
+        width: 105px;
+        height: 40px;
+        padding: 2px 4px;
+      }
+
+      .btn-outline-warning {
+        color: #ffc107;
+        background-color: transparent;
+        background-image: none;
+        border-color: #ffc107;
+      }
+
+      .ant-btn-lg {
+        height: 40px;
+        padding: 6.4px 15px;
+        font-size: 16px;
+        border-radius: 3px;
+      }
+
+      .ant-btn, .ant-btn:active, .ant-btn:focus {
+        outline: 0;
+      }
+
+      [type=reset], [type=submit], button, html [type=button] {
+        -webkit-appearance: button;
+      }
+
+    </style>
+  </th:block>
+
+</head>
+<body>
+<th:block id="main-content">
+  <main id="main" class="main">
+
+    <div class="pagetitle">
+      <h1></h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="/manage/shipping">Đơn vị vận chuyển</a></li>
+          <li class="breadcrumb-item active"><a href="#"></a>Thêm mới</li>
+        </ol>
+      </nav>
+    </div><!-- End Page Title -->
+
+    <section class="section">
+      <div class="row">
+        <div class="col-lg-12">
+          <ul class="nav nav-tabs nav-tabs-bordered d-flex" id="borderedTabJustified"
+              role="tablist">
+            <li class="nav-item flex-fill" role="presentation">
+              <button class="nav-link w-100 active" id="home-tab" data-bs-toggle="tab"
+                      data-bs-target="#bordered-justified-home" type="button" role="tab"
+                      aria-controls="home" aria-selected="true">Tạo đơn lẻ
+              </button>
+            </li>
+            <!--
+            <li class="nav-item flex-fill" role="presentation">
+              <button class="nav-link w-100" id="profile-tab" data-bs-toggle="tab"
+                      data-bs-target="#bordered-justified-profile" type="button" role="tab"
+                      aria-controls="profile" aria-selected="false" tabindex="-1">Profile
+              </button>
+            </li>
+            <li class="nav-item flex-fill" role="presentation">
+              <button class="nav-link w-100" id="contact-tab" data-bs-toggle="tab"
+                      data-bs-target="#bordered-justified-contact" type="button" role="tab"
+                      aria-controls="contact" aria-selected="false" tabindex="-1">Contact
+              </button>
+            </li>
+            -->
+          </ul>
+          <div style="position: relative">
+            <th:block th:replace="manage/shipping/vn-post/domestic/domestic"></th:block>
+            <th:block th:replace="manage/shipping/vn-post/domestic/footerBar"></th:block>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+</th:block>
+
+<th:block id="js-resources">
+  <script th:inline="javascript">
+    let vnpostFrom = $("#form-vn-post-domestic-order");
+    $(document).ready(function () {
+      addProvince();
+      addSpdv();
+    });
+
+    jQuery.validator.addMethod('phone', function (value) {
+      let regex = /(84|0[3|5|7|8|9])+([0-9]{8})\b/g;
+      return value.trim().match(regex);
+    });
+
+    vnpostFrom.validate({
+      invalidHandler: function (form, validator) {
+        let errors = validator.numberOfInvalids();
+        if (errors) {
+          validator.errorList[0].element.focus();
+        }
+      },
+      highlight: function (element, errorClass) {
+        $(element).removeClass(errorClass);
+      },
+      rules: {
+        senderName: "required",
+        senderPhone:{
+          required: true,
+          phone: true,
+        },
+        senderAddress: "required",
+        senderProvinceCode: "required",
+        senderDistrictCode: "required",
+        senderCommuneCode: "required",
+        receiverName: "required",
+        receiverAddress: "required",
+        receiverProvinceCode: "required",
+        receiverDistrictCode: "required",
+        receiverCommuneCode: "required",
+        receiverPhone:{
+          required: true,
+          phone: true,
+        },
+        serviceCode: "required",
+        contentNote: "required",
+        weight:{
+          required: true,
+          number: true,
+        },
+      },
+      messages: {
+        senderName: "Vui lòng nhập",
+        senderPhone:{
+          required: "Vui lòng nhập",
+          phone: "Vui lòng nhập đúng định dạnh số điện thoại"
+        },
+        senderAddress: "Vui lòng nhập",
+        senderProvinceCode: "Vui lòng chọn",
+        senderDistrictCode: "Vui lòng chọn",
+        senderCommuneCode: "Vui lòng chọn",
+        receiverName: "Vui lòng nhập",
+        receiverAddress: "Vui lòng nhập",
+        receiverProvinceCode: "Vui lòng chọn",
+        receiverDistrictCode: "Vui lòng chọn",
+        receiverCommuneCode: "Vui lòng chọn",
+        receiverPhone:{
+          required: "Vui lòng nhập",
+          phone: "Vui lòng nhập đúng định dạnh số điện thoại"
+        },
+        serviceCode: "Vui lòng chọn",
+        contentNote: "Vui lòng nhập",
+        weight:{
+          required: "Vui lòng nhập",
+          number: "Vui lòng chỉ nhập số",
+        },
+      }
+    });
+
+    function addDelivery(type){
+      let val = $('#deliveryRequire').val();
+      if(val){
+        $('#deliveryRequire').val('');
+        if (val === '1') {
+          $('#deliveryRequire1').removeClass('active');
+        } else {
+          $('#deliveryRequire2').removeClass('active');
+        }
+      }else {
+        $('#deliveryRequire').val(type);
+        if (type === '1') {
+          $('#deliveryRequire1').addClass('active');
+          $('#deliveryRequire2').removeClass('active');
+        } else {
+          $('#deliveryRequire2').addClass('active');
+          $('#deliveryRequire1').removeClass('active');
+        }
+      }
+    }
+
+    function addSpdv(){
+      let res = ajaxCall(apiDomain + '/api/v1/admin/shipping/vn-post/spdv', '', 'get');
+      if (res.status == "success") {
+        let listOption = '<option value="">Chọn dịch vụ</option>';
+        res.data.forEach((item, index) => {
+          listOption += `<option value="${item.code}">${item.name}</option>`;
+        });
+        $('#serviceCode').html(listOption);
+      }
+    }
+
+    $("#serviceCode").on( "change", function() {
+      let gtgt = ajaxCall(apiDomain + '/api/v1/admin/shipping/vn-post/spdv/findByServiceCode?serviceCode='+$(this).val(), '', 'get');
+      if(gtgt.status == "success"){
+        let listTr = '';
+        gtgt.data.forEach((item, index) => {
+          let type = item.type === 'ADD_SERVICE' ? 'gtgtSv' : 'gtgtRq';
+          listTr += ` <tr>
+                            <th scope="row">
+                              <input id="ck-${item.code}" name="${type}" class="form-check-input gtgt" type="checkbox" value="${item.code}"/>
+                            </th>
+                            <td>${item.name}</td>
+                            <td id="td-${item.code}">
+
+                            </td>
+                          </tr>`;
+        });
+        $('#list-service').html(listTr);
+      }
+
+      addEventGtgt();
+    });
+
+    function addEventGtgt() {
+      $('input[class*="gtgt"]').on("change", function () {
+        if (this.checked) {
+          let prop = ajaxCall(apiDomain + '/api/v1/admin/shipping/vn-post/gtgt/findByServiceCode?serviceCode=' + $(this).val(), '', 'get');
+          if (prop.status == "success") {
+            let listInput = '';
+            prop.data.forEach((item, index) => {
+              let margin = listInput.length > 0 ? 'mt-1' : '';
+              if (item.type === 'TEXT') {
+                listInput += `<input type="text" attr-type="text" class="form-control ${margin}" attr-code="${item.code}" placeholder="${item.name}">`;
+              } else if (item.type === 'DATE') {
+                listInput += `<input type="text" attr-type="date" onfocus="(this.type='date')" onblur="(this.type='text')" class="form-control ${margin}" attr-code="${item.code}" placeholder="${item.name}">`
+              }
+            });
+            $('#td-' + $(this).val()).html(listInput);
+          }
+        } else {
+          $('#td-' + $(this).val()).empty();
+        }
+      });
+    }
+
+    function addProvince() {
+      let province = ajaxCall(apiDomain + '/api/v1/public/area/getAllProvince', '', 'get');
+      if (province.status == "200") {
+        let listOption = '';
+        province.data.forEach((item, index) => {
+          listOption += `<option value="${item.id}">${item.value}</option>`;
+        });
+        $('#receiverProvinceCode').append(listOption);
+        $('#senderProvinceCode').append(listOption);
+      }
+    }
+
+    $("#receiverProvinceCode").on( "change", function() {
+      let district = ajaxCall(apiDomain + '/api/v1/public/area/getAllDistrict?provinceId='+$(this).val(), '', 'get');
+      if(district.status == "200"){
+        let listOption = '<option value="">Quận / Huyện</option>';
+        district.data.forEach((item, index) => {
+          listOption += `<option value="${item.id}">${item.value}</option>`;
+        });
+        $('#receiverDistrictCode').html(listOption);
+      }
+      $('#receiverCommuneCode').html(`<option selected="">Phường / Xã</option>`);
+    });
+
+    $("#receiverDistrictCode").on( "change", function() {
+      let commune = ajaxCall(apiDomain + '/api/v1/public/area/getAllCommune?districtId='+$(this).val(), '', 'get');
+      if(commune.status == "200") {
+        let listOption = '<option value="">Phường / Xã</option>';
+        commune.data.forEach((item, index) => {
+          listOption += `<option value="${item.id}">${item.value}</option>`;
+        });
+        $('#receiverCommuneCode').html(listOption);
+      }
+    });
+
+    $("#senderProvinceCode").on( "change", function() {
+      let district = ajaxCall(apiDomain + '/api/v1/public/area/getAllDistrict?provinceId='+$(this).val(), '', 'get');
+      if(district.status == "200"){
+        let listOption = '<option value="">Quận / Huyện</option>';
+        district.data.forEach((item, index) => {
+          listOption += `<option value="${item.id}">${item.value}</option>`;
+        });
+        $('#senderDistrictCode').html(listOption);
+      }
+      $('#senderCommuneCode').html(`<option selected="">Phường / Xã</option>`);
+    });
+
+    $("#senderDistrictCode").on( "change", function() {
+      let commune = ajaxCall(apiDomain + '/api/v1/public/area/getAllCommune?districtId='+$(this).val(), '', 'get');
+      if(commune.status == "200") {
+        let listOption = '<option value="">Phường / Xã</option>';
+        commune.data.forEach((item, index) => {
+          listOption += `<option value="${item.id}">${item.value}</option>`;
+        });
+        $('#senderCommuneCode').html(listOption);
+      }
+    });
+
+    function formatDate(date){
+      if(date){
+        date = date.split('-');
+        return date[2] + '/' + date[1] + '/' + date[0];
+      }
+      return date;
+    }
+    function buildSv(arr){
+      let list = [];
+      arr.forEach((item) => {
+        let prop = '';
+        $('#td-'+item).find('input').each(function( index ) {
+          let valInput = $(this).attr('attr-type') === 'date' ? formatDate($(this).val()) : $(this).val();
+          let val = valInput ? valInput : 'null';
+          let p = index === 0 ? '' : ';';
+          prop += p + $(this).attr('attr-code') + ':' + val;
+        });
+        let obj = {
+            "code": item,
+            "propValue": prop
+          };
+        list.push(obj);
+      });
+      return list;
+    }
+    function save() {
+      if (vnpostFrom.valid()) {
+        let form = new FormData(vnpostFrom[0]);
+        let param = {
+          "orderCreationStatus": 0,
+          "type": "GUI",
+          "customerCode": "",
+          "contractCode": "",
+          "informationOrder": {
+            "senderName": form.get('senderName'),
+            "senderPhone": form.get('senderPhone'),
+            "senderMail": null,
+            "senderAddress": form.get('senderAddress'),
+            "senderProvinceCode": form.get('senderProvinceCode'),
+            "senderProvinceName": null,
+            "senderDistrictCode": form.get('senderDistrictCode'),
+            "senderDistrictName": null,
+            "senderCommuneCode": form.get('senderCommuneCode'),
+            "senderCommuneName": null,
+            "receiverName": form.get('receiverName'),
+            "receiverAddress": form.get('receiverAddress'),
+            "receiverProvinceCode": form.get('receiverProvinceCode'),
+            "receiverProvinceName": form.get('receiverProvinceCode'),
+            "receiverDistrictCode": form.get('receiverDistrictCode'),
+            "receiverDistrictName": form.get('receiverDistrictCode'),
+            "receiverCommuneCode": form.get('receiverCommuneCode'),
+            "receiverCommuneName": form.get('receiverCommuneCode'),
+            "receiverPhone": form.get('receiverPhone'),
+            "receiverEmail": null,
+            "serviceCode": form.get('serviceCode'),
+            "addonService": buildSv(form.getAll('gtgtSv')),
+            "additionRequest": buildSv(form.getAll('gtgtRq')),
+            "orgCodeCollect": null,
+            "orgCodeAccept": null,
+            "saleOrderCode": form.get('saleOrderCode'),
+            "contentNote": form.get('contentNote'),
+            "weight": form.get('weight'),
+            "width": form.get('width'),
+            "length": form.get('length'),
+            "height": form.get('height'),
+            "vehicle": "BO",
+            "sendType": form.get('sendType'),
+            "isBroken": form.get('isBroken') ? form.get('isBroken') : "0",
+            "deliveryTime": form.get('deliveryTime'),
+            "deliveryRequire": form.get('deliveryRequire'),
+            "deliveryInstruction": form.get('deliveryInstruction')
+          }
+        };
+        let res = ajaxCall(apiDomain + '/api/v1/admin/shipping/vn-post',param,'post');
+        if(res.status === 'success'){
+          $('#gamFee').text(Number(form.get('weight')).toLocaleString() + ' gram');
+          alert("Tạo đơn thành công");
+        }else if(res.status === 'fail'){
+          alert(res.msg);
+        }
+      }
+    }
+
+    function fee(){
+      if (vnpostFrom.valid()) {
+        let form = new FormData(vnpostFrom[0]);
+        let param = {
+          "scope": 1,
+          "customerCode": "",
+          "contractCode": "",
+          "data": {
+            "senderProvinceCode": form.get('senderProvinceCode'),
+            "senderProvinceName": null,
+            "senderDistrictCode": form.get('senderDistrictCode'),
+            "senderDistrictName": null,
+            "senderCommuneCode": form.get('senderCommuneCode'),
+            "senderCommuneName": null,
+            "receiverProvinceCode": form.get('receiverProvinceCode'),
+            "receiverProvinceName": null,
+            "receiverDistrictCode": form.get('receiverDistrictCode'),
+            "receiverDistrictName": null,
+            "receiverCommuneCode": form.get('receiverCommuneCode'),
+            "receiverCommuneName": null,
+            "receiverNational": "VN",
+            "receiverCity": null,
+            "orgCodeAccept": null,
+            "receiverPostCode": null,
+            "weight": form.get('weight'),
+            "width": form.get('width'),
+            "length": form.get('length'),
+            "height": form.get('height'),
+            "serviceCode": form.get('serviceCode'),
+            "addonService": buildSv(form.getAll('gtgtSv')),
+            "additionRequest": buildSv(form.getAll('gtgtRq')),
+            "vehicle": "BO"
+          }
+        }
+        let res = ajaxCall(apiDomain + '/api/v1/admin/shipping/vn-post/fee/calculate', param, 'post');
+        if (res.status === 'success') {
+          let totalRevenue = $('input[attr-code="PROP0018"]').val();
+          $('#totalFee').text(res.data[0].totalFee.toLocaleString() + ' đ');
+          $('#gamFee').text(Number(form.get('weight')).toLocaleString() + ' gram');
+          $('#totalRevenue').text(totalRevenue ? Number(totalRevenue).toLocaleString() + ' đ' : '0 đ');
+        } else if (res.status === 'fail') {
+          alert(res.msg);
+        }
+      }
+    }
+
+  </script>
+</th:block>
+</body>
+</html>

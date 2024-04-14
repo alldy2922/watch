@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{manage/layout/layout :: main-fragment(
+                                                ~{:: title},
+                                                ~{:: #css-resources},
+                                                ~{:: #js-resources},
+                                                ~{:: #main-content}
+                                               )}">
+<head>
+  <meta charset="UTF-8">
+  <title>Đăng nhập</title>
+
+  <th:block id="css-resources">
+    <style>
+
+    </style>
+  </th:block>
+
+</head>
+<body>
+<th:block id="main-content">
+  <main>
+    <div class="container">
+
+      <section class="section register min-vh-100 d-flex flex-column align-items-center justify-content-center py-4">
+        <div class="container">
+          <div class="row justify-content-center">
+            <div class="col-lg-4 col-md-6 d-flex flex-column align-items-center justify-content-center">
+
+              <div class="d-flex justify-content-center py-4">
+                <a href="index.html" class="logo d-flex align-items-center w-auto">
+                  <img th:src="@{/assets/img/logo.png}" alt="">
+                  <span class="d-none d-lg-block">Market</span>
+                </a>
+              </div><!-- End Logo -->
+
+              <div class="card mb-3">
+
+                <div class="card-body">
+
+                  <div class="pt-4 pb-2">
+                    <h5 class="card-title text-center pb-0 fs-4">Đăng nhập</h5>
+                    <p class="text-center small"></p>
+                  </div>
+
+                  <form class="row g-3" id="form-login" action="#">
+
+                    <div class="col-12">
+                      <label for="username" class="form-label">Tên đăng nhập</label>
+                      <input type="text" name="username" class="form-control" id="username">
+                    </div>
+
+                    <div class="col-12">
+                      <label for="password" class="form-label">Mật khẩu</label>
+                      <input type="password" name="password" class="form-control" id="password">
+                    </div>
+
+                    <div class="col-12">
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="rememberMe" value="true" id="rememberMe">
+                        <label class="form-check-label" for="rememberMe">Ghi nhớ mật khẩu</label>
+                      </div>
+                    </div>
+                    <div class="col-12">
+                      <button class="btn btn-primary w-100" type="button" onclick="login()">Đăng nhập</button>
+                    </div>
+                    <div class="col-12">
+<!--                      <p class="small mb-0">Don't have account? <a href="pages-register.html">Create an account</a></p>-->
+                    </div>
+                  </form>
+
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+    </div>
+  </main>
+</th:block>
+
+<th:block id="js-resources">
+  <script th:inline="javascript">
+    $("#form-login").validate({
+      invalidHandler: function(form, validator) {
+        let errors = validator.numberOfInvalids();
+        if (errors) {
+          validator.errorList[0].element.focus();
+        }
+      },
+      highlight: function(element, errorClass) {
+        $(element).removeClass(errorClass);
+      },
+      rules: {
+        username: {
+          required: true,
+          rangelength: [1,50]
+        },
+        password: {
+          required: true,
+          rangelength: [4,100]
+        }
+      },
+      messages: {
+        username: {
+          required: "Vui lòng nhập tên đăng nhập",
+          rangelength: "Tên đăng nhập phải từ 1 - 50 ký tự"
+        },
+        password: {
+          required: "Vui lòng nhập mật khẩu",
+          rangelength: "Tên đăng nhập phải từ 4 - 100 ký tự"
+        }
+      }
+    });
+
+    function login(){
+      if($("#form-login").valid()){
+        let vm = {
+          username: $('#username').val(),
+          password: $('#password').val(),
+          rememberMe: $('#rememberMe').val()
+        }
+        let res = ajaxCall('/api/v1/login',vm,'post');
+        if(res.status === "error"){
+          alert("Lỗi hệ thống");
+        }else{
+          if(res.status === "unauthorized"){
+            alert("Thông tin tài khoản không chính xác");
+          }else{
+            if(res.status === "success"){
+              location.href = '/admin';
+            }else{
+              alert(res.msg);
+            }
+          }
+        }
+      }
+    }
+
+  </script>
+</th:block>
+</body>
+</html>

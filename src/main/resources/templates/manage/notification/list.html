@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{manage/layout/layout :: main-fragment(
+                                                ~{:: title},
+                                                ~{:: #css-resources},
+                                                ~{:: #js-resources},
+                                                ~{:: #main-content}
+                                               )}">
+<head>
+    <meta charset="UTF-8">
+    <title>Danh sách Phê Duyệt</title>
+
+    <th:block id="css-resources">
+    </th:block>
+    <link rel="manifest" href="manifest.json">
+</head>
+<body>
+<th:block id="main-content">
+    <main id="main" class="main">
+        <div class="page-title">
+            <h1>Phê Duyệt</h1>
+            <nav>
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="">Phê Duyệt</a></li>
+                    <li class="breadcrumb-item active"><a href="./review/list"></a>Danh sách</li>
+                </ol>
+            </nav>
+        </div>
+
+        <section class="section">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <br>
+                            <div class="datatable-top">
+                                <div class="common-search">
+                                    <div class="search-bar">
+                                        <form class="search-form d-flex align-items-center" method="get" action="#"
+                                              id="frm">
+<!--                                            <input type="text" id="query" name="query"-->
+<!--                                                   placeholder="Theo tên Hãng" title="Enter search keyword">-->
+<!--                                            <button type="submit" title="Search"><i class="bi bi-search"></i></button>-->
+                                        </form>
+                                    </div>
+                                </div>
+                                <div style="float: right">
+                                    <button class="js-push-button" disabled>
+                                        Enable Push Messages
+                                    </button>
+                                </div>
+                            </div>
+
+                            <table class="table table-striped">
+                                <thead>
+                                <tr>
+                                    <th scope="row">
+                                        <label>
+                                            <input class="check-all-remove form-check-input" type="checkbox"
+                                                   id="checkbox_all"
+                                                   onclick="allCheck()">
+                                        </label>
+                                    </th>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Loại phê duyệt</th>
+                                    <th scope="col">Tóm tắt</th>
+                                    <th scope="col">Người tạo</th>
+                                    <th scope="col">Ngày yêu cầu</th>
+                                    <th scope="col">Status</th>
+                                </tr>
+                                </thead>
+                                <tbody id="data-table">
+
+                                </tbody>
+                            </table>
+                            <th:block th:replace="~{manage/fragments/pagination :: ${pagination}}"></th:block>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+</th:block>
+
+<th:block id="js-resources">
+    <script th:inline="javascript">
+        $(document).ready(function () {
+            initialiseState()
+        });
+
+        function initialiseState() {
+            // Are Notifications supported in the service worker?
+            if (!('showNotification' in ServiceWorkerRegistration.prototype)) {
+                console.warn('Notifications aren\'t supported.');
+
+                return;
+            }
+
+            // Check the current Notification permission.
+            // If its denied, it's a permanent block until the
+            // user changes the permission
+            if (Notification.permission === 'denied') {
+                console.warn('The user has blocked notifications.');
+
+                return;
+            }
+
+            // Check if push messaging is supported
+            if (!('PushManager' in window)) {
+                console.warn('Push messaging isn\'t supported.');
+
+                return;
+            }
+
+            // We need the service worker registration to check for a subscription
+            navigator.serviceWorker.ready.then(function(serviceWorkerRegistration) {
+                // Do we already have a push message subscription?
+                serviceWorkerRegistration.pushManager.getSubscription()
+                    .then(function(subscription) {
+                        // Enable any UI which subscribes / unsubscribes from
+                        // push messages.
+                        var pushButton = document.querySelector('.js-push-button');
+                        pushButton.disabled = false;
+
+                        if (!subscription) {
+                            // We aren't subscribed to push, so set UI
+                            // to allow the user to enable push
+                            return;
+                        }
+
+                        // Keep your server in sync with the latest subscriptionId
+                        sendSubscriptionToServer(subscription);
+
+                        // Set your UI to show they have subscribed for
+                        // push messages
+                        pushButton.textContent = 'Disable Push Messages';
+                        isPushEnabled = true;
+                    })
+                    .catch(function(err) {
+                        console.warn('Error during getSubscription()', err);
+                    });
+            });
+        }
+    </script>
+</th:block>
+</body>
+</html>

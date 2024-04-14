@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{manage/layout/layout :: main-fragment(
+                                                ~{:: title},
+                                                ~{:: #css-resources},
+                                                ~{:: #js-resources},
+                                                ~{:: #main-content}
+                                               )}">
+<head>
+    <meta charset="UTF-8">
+    <title>Danh sách Danh Mục</title>
+
+    <th:block id="css-resources">
+    </th:block>
+
+</head>
+<body>
+<th:block id="main-content">
+    <main id="main" class="main">
+
+        <div class="page-title">
+            <h1>Danh mục</h1>
+            <nav>
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="">Danh Mục</a></li>
+                    <li class="breadcrumb-item active"><a href="./category/list"></a>Danh sách</li>
+                </ol>
+            </nav>
+        </div>
+
+        <section class="section">
+            <div class="row">
+                <div class="col-lg-12">
+
+                    <div class="card">
+                        <div class="card-body">
+                            <br>
+
+                            <div class="datatable-top">
+                                <!--                <div class="datatable-search">-->
+
+                                <div class="common-search">
+                                    <div class="search-bar">
+                                        <form class="search-form d-flex align-items-center" method="get" action="#"
+                                              id="frm">
+                                            <input type="text" id="query" name="query"
+                                                   placeholder="Theo tên Hãng" title="Enter search keyword">
+                                        </form>
+                                    </div>
+                                </div>
+                                <div style="float: right">
+                                    <button type="button" class="btn btn-success btn-sm"
+                                            onclick="insertPage()">Thêm mới
+                                    </button>
+                                    <button type="button" class="btn btn-danger btn-sm"
+                                            onclick="remove_ver2()">Xóa
+                                    </button>
+                                </div>
+
+                            </div>
+
+                            <!-- Table with stripped rows -->
+                            <table class="table table-striped">
+                                <thead>
+                                <tr>
+                                    <th scope="row">
+                                        <label>
+                                            <input class="check-all-remove form-check-input" type="checkbox" id="checkbox_all"
+                                                   onclick="allCheck()">
+                                        </label>
+                                    </th>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Mã danh mục</th>
+                                    <th scope="col">Tên</th>
+                                    <th scope="col">Cấp độ danh mục</th>
+                                    <th scope="col">Nổi bật</th>
+                                    <th scope="col">Trạng thái</th>
+                                </tr>
+                                </thead>
+                                <tbody id="data-table">
+
+                                </tbody>
+                            </table>
+
+                            <!-- End Table with stripped rows -->
+                            <th:block th:replace="~{manage/fragments/pagination :: ${pagination}}"></th:block>
+
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+    </main>
+</th:block>
+
+<th:block id="js-resources">
+    <script th:inline="javascript">
+
+        $(document).ready(function () {
+            loadDataTable(1);
+            loadButton();
+        });
+        const pageParam = {
+            'formId': 'frm',
+            'dataListUrl': apiDomain + API.getMerchandiseCategoryUrl(),
+            'deleteUrl': apiDomain + API.getMerchandiseCategoryUrl(),
+            'updateStatusUrl': apiDomain + API.getMerchandiseCategoryUrl() + "/status"
+        };
+        //build list data
+        //default name: getDataTable(data)
+        function getDataTable(data) {
+            let listData = '';
+            data.forEach((element, index) => {
+                let status = element.status === 1 ? "Sử dụng" : "Không sử dụng";
+                let statusClass= element.status === 1 ? "bg-success" : "bg-danger";
+                let checkBox = '';
+                if(element.type == null){
+                    checkBox = '<input name="ids" class="check-box-remove form-check-input" type="checkbox" value="'+element.id+'">';
+                }
+                listData += '<tr>' +
+                    '                  <th>' +
+                                            checkBox +
+                    '                  </th>' +
+                    '                  <th scope="row">' + rowOrder(index) + '</th>' +
+                    '                  <td>' + element.id + '</td>' +
+                    '                  <td>' + element.name + '</td>' +
+                    '                  <td>' + element.level + '</td>' +
+                    '                  <td><span class="badge rounded-pill ' +getClassStatus(element.hasTop) + '">' + getTextStatus(element.hasTop) + '</span></td>' +
+                    '                  <td><span id="status-template-'+element.id+'" onclick="updateStatus('+element.id+','+element.status+')" style="cursor: pointer" class="badge rounded-pill '+getClassStatus(element.status)+'">'+getTextStatus(element.status)+'</span></td>' +
+                    '                  <td><i class="bi bi-eye" style="cursor: pointer" onclick="detailPage('+element.id+""+')"></i></td>' +
+                    '                </tr>'
+
+            });
+            return listData;
+        }
+        $( "#query" ).on( "keyup", function() {
+            loadDataTable(1);
+        } );
+        function detailPage(id){
+            $(location).attr('href', '/admin/merchandise/category/update?id='+id);
+        }
+        function insertPage(){
+            $(location).attr('href', '/admin/merchandise/category/insert');
+        }
+        function getClassStatus(status) {
+            let className = '';
+            if(status === 0) {
+                className = 'bg-danger';
+            }else{
+                className = 'bg-success';
+            }
+            return className;
+        }
+        function getTextStatus(status) {
+            let text = '';
+            if(status === 0) {
+                text = 'Không sử dụng';
+            }else{
+                text = 'Sử dụng';
+
+            }
+            return text;
+        }
+    </script>
+</th:block>
+</body>
+</html>

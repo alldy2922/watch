@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Article</title>
+</head>
+<body>
+<div>
+    <h2>Article</h2>
+    <table>
+        <thead>
+        <tr>
+            <th>id</th>
+            <th>title</th>
+            <th>author</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="article : ${articles}">
+            <td th:text="${article.getId()}"></td>
+            <td th:text="${article.getTitle()}"></td>
+            <td th:text="${article.getAuthor()}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

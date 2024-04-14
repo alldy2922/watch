@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html" xmlns:sec="http://www.w3.org/1999/xhtml"
+      th:replace="~{manage/layout/layout :: main-fragment(
+                                                ~{:: title},
+                                                ~{:: #css-resources},
+                                                ~{:: #js-resources},
+                                                ~{:: #main-content}
+                                               )}">
+<head>
+    <meta charset="UTF-8">
+    <title th:if="${type == 'insert'}">Thêm nhân viên</title>
+    <title th:if="${type == 'update'}">Cập nhật nhân viên</title>
+
+    <th:block id="css-resources">
+        <style>
+
+        </style>
+    </th:block>
+
+</head>
+<body>
+<th:block id="main-content">
+    <main id="main" class="main">
+
+        <div class="pagetitle">
+            <h1 th:if="${type == 'insert'}">Thêm nhân viên</h1>
+            <h1 th:if="${type == 'update'}">Cập nhật nhân viên</h1>
+            <nav>
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/admin/user/account"></a>Nhân viên</li>
+                    <th:block th:if="${type == 'insert'}">
+                        <li class="breadcrumb-item active"><a href="#"></a>Thêm mới</li>
+                    </th:block>
+                    <th:block th:if="${type == 'update'}">
+                        <li class="breadcrumb-item active"><a href="#"></a>Cập nhật</li>
+                    </th:block>
+                </ol>
+            </nav>
+        </div><!-- End Page Title -->
+
+        <section class="section">
+            <div class="row">
+                <div class="col-lg-12">
+
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title"></h5>
+
+                            <!-- General Form Elements -->
+                            <form id="form-user">
+                                <input type="hidden" name="id" id="id-user">
+                                <div class="row mb-3">
+                                    <label class="col-sm-2 col-form-label">Tên nhân viên</label>
+                                    <div class="col-sm-9">
+                                        <input type="text" name="name" class="form-control" id="name">
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label class="col-sm-2 col-form-label">Số điện thoại</label>
+                                    <div class="col-sm-9">
+                                        <input type="text" name="phoneNumber" class="form-control" id="phone">
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label class="col-sm-2 col-form-label">Tên đăng nhập</label>
+                                    <div class="col-sm-9">
+                                        <input type="text" name="username" class="form-control" id="username">
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label class="col-sm-2 col-form-label">Mật khẩu</label>
+                                    <div class="col-sm-9">
+                                        <input th:if="${type == 'insert'}" type="text" name="password" class="form-control" id="password">
+                                        <input th:if="${type == 'update'}" type="text" name="password" class="form-control" id="password" placeholder="Nhập mật khẩu mới">
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label class="col-sm-2 col-form-label">Quyền</label>
+                                    <div class="col-sm-9">
+                                        <select class="form-select" id="roles" aria-label="" multiple>
+
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label class="col-sm-2 col-form-label">Trạng thái</label>
+                                    <div class="col-sm-9">
+                                        <select class="form-select" name="status" aria-label="">
+                                            <option selected="" value="1">Sử dụng</option>
+                                            <option value="0">Không sử dụng</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </form>
+
+                            <div class="row mb-3" sec:authorize="hasRole('EMPLOYEE_E')">
+                                <label class="col-sm-2 col-form-label"></label>
+                                <div class="col-sm-10">
+                                    <button type="button" class="btn btn-primary" onclick="saveOrUpdate()">
+                                        <th:block th:if="${type == 'insert'}">Lưu</th:block>
+                                        <th:block th:if="${type == 'update'}">Cập nhật</th:block>
+                                    </button>
+                                    <button type="button" class="btn btn-danger" onclick="cancel('/admin/user/account')">Hủy</button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+    </main>
+</th:block>
+
+<th:block id="js-resources">
+    <script th:inline="javascript">
+        const id = [[${id}]];
+        let rolesChoice;
+        $(document).ready(function() {
+            addOptionRole();
+            rolesChoice = new Choices('#roles', {
+                removeItemButton: true,
+                maxItemCount:100,
+                searchResultLimit:100,
+                renderChoiceLimit:100
+            });
+            getDetail();
+        });
+
+        jQuery.validator.addMethod('phone', function (value) {
+            let regex = /(84|0[3|5|7|8|9])+([0-9]{8})\b/g;
+            return value.trim().match(regex);
+        });
+
+        $("#form-user").validate({
+            invalidHandler: function(form, validator) {
+                let errors = validator.numberOfInvalids();
+                if (errors) {
+                    validator.errorList[0].element.focus();
+                }
+            },
+            highlight: function(element, errorClass) {
+                $(element).removeClass(errorClass);
+            },
+            rules: {
+                name:{
+                    required: true
+                },
+                phoneNumber:{
+                    required: true,
+                    phone: true,
+                },
+                username: {
+                    required: true,
+                    rangelength: [1,50]
+                },
+                password: {
+                    required: id ? false : true,
+                    rangelength: [4,100]
+                }
+            },
+            messages: {
+                name:{
+                    required: "Vui lòng nhập tên"
+                },
+                phoneNumber:{
+                    required: "Vui lòng nhập số điện thoại",
+                    phone: "Vui lòng nhập đúng định dạnh số điện thoại"
+                },
+                username: {
+                    required: "Vui lòng nhập tên đăng nhập",
+                    rangelength: "Tên đăng nhập phải từ 1 - 50 ký tự"
+                },
+                password: {
+                    required: "Vui lòng nhập mật khẩu",
+                    rangelength: "Tên đăng nhập phải từ 4 - 100 ký tự"
+                }
+            }
+        });
+
+
+        function saveOrUpdate(){
+            if($("#form-user").valid()){
+                let form = $('#form-user')[0];
+                let formData = new FormData(form);
+                let roles = $('#roles').val();
+                if(roles.length == 0){
+                    alert('Vui lòng chọn quyền');
+                    return false;
+                }
+                formData.set('roles',roles);
+                let res = ajaxCall(apiDomain + '/api/v1/admin/user/account',formData,'post',false);
+                if(res.status=="success") {
+                    if(id == null){
+                        alert("Thêm mới thành công");
+                    }else {
+                        alert("Cập nhật thành công");
+                    }
+                    $(location).attr('href', '/admin/user/account');
+                }
+                if(res.status == "fail"){
+                    alert(res.msg);
+                }
+            }
+        }
+
+        function addOptionRole(){
+            let result = ajaxCall(apiDomain + '/api/v1/admin/user/account/all-role','','get');
+            if(result.status=="success"){
+                let listOption = '';
+                result.data.forEach((item, index) => {
+                    listOption += `<option value="${item.id}">${item.code}</option>`
+                });
+                $('#roles').html(listOption);
+            }
+        }
+
+        function getDetail(){
+            if(id != null){
+                let result = ajaxCall(apiDomain + '/api/v1/admin/user/account/'+id,'','get',false);
+                if(result.status=="success") {
+                    let res = result.data;
+                    $("#id-user").val(res.id);
+                    $("#name").val(res.name);
+                    $("#phone").val(res.phoneNumber);
+                    $("#username").val(res.username);
+                    rolesChoice.setChoiceByValue(res.roles.map(String));
+                    $("#status").val(res.status).change();
+                }
+            }
+        }
+
+    </script>
+</th:block>
+</body>
+</html>

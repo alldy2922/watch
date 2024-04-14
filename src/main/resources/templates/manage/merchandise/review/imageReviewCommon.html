@@ -1,0 +1,76 @@
+<th:block th:fragment="imageReviewCommon">
+    <div id="image">
+        <div id="listImage" class="mb-3">
+            <div id="image-item">
+                <div class="row mb-2">
+                    <div class="col-sm-2"></div>
+                    <div class="col-sm-4">
+                        <div id="image-preview-image" class="img-fluid" style="position:relative; display: none"></div>
+                        <input name="urlImg" id-img-preview="image-preview-image" id="image-html-image" type="file" accept="image/*" style="display: none" onchange="showImgPreview('image-preview-image','image-html-image',this)">
+                    </div>
+                </div>
+                <div class="row">
+                    <label class="col-sm-3 col-form-label">Hình ảnh</label>
+                    <div class="col-sm-9">
+                        <div class="row">
+                            <div class="col-sm-1">
+                                <label style="cursor: pointer" for="image-html-image"><i style="font-size: 25px;" class="bi bi-upload"></i></label>
+                            </div>
+                            <div class="col-sm-2">
+                                <i style="font-size: 25px; cursor: pointer" class="bi bi-plus-circle" onclick="addImage()"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <input type="hidden" name="indexImage" id="indexImage" value="1"/>
+    </div>
+    <!--Image Hình ảnh nổi bật-->
+    <script th:inline="javascript">
+        let imageIndex = 1;
+
+        function addImage(){
+            let imageHtml = $('#indexImage');
+            let indexImage = imageHtml.val();
+            if (parseInt(indexImage) < 2) {
+                let item = ` <div id="image-item-${indexImage}">
+                <div class="row mb-2">
+                    <div class="col-sm-2"></div>
+                    <div class="col-sm-4">
+                        <div id="image-preview-image-${indexImage}" class="img-fluid mt-3" style="position:relative; display: none"></div>
+                        <input name="urlImg" id-img-preview="image-preview-image-${indexImage}" id="image-html-image-${indexImage}" type="file" accept="image/*" style="display: none" onchange="showImgPreview('image-preview-image-${indexImage}','image-html-image-${indexImage}',this)">
+                    </div>
+                </div>
+                <div class="row">
+                    <label class="col-sm-3"></label>
+                    <div class="col-sm-9">
+                        <div class="row">
+                            <div class="col-sm-1">
+                                <label style="cursor: pointer" for="image-html-image-${indexImage}"><i style="font-size: 25px;" class="bi bi-upload"></i></label>
+                            </div>
+                            <div class="col-sm-2">
+                                <i style="font-size: 25px; cursor: pointer" class="bi bi-dash-circle" onclick="deleteImage('#image-item-${indexImage}')"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+                $('#listImage').append(item);
+                indexImage ++;
+                imageHtml.val(indexImage);
+                imageHtml.attr('value',indexImage);
+            }
+        }
+        function deleteImage(id){
+            let imageHtml = $('#indexImage');
+            let indexImage = imageHtml.val();
+            imageHtml.val(indexImage - 1)
+            $(id).remove();
+        }
+        function buildJsonImage(){
+            return getJsonByForm('image', 'listImage', false, false, false, false, true);
+        }
+    </script>
+
+</th:block>

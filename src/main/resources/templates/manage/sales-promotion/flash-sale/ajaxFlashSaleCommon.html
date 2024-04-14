@@ -1,0 +1,247 @@
+<th:block th:fragment="flashSaleCommon">
+    <script th:inline="javascript">
+        const rules = {
+            name: {
+                required: true,
+                maxlength: 50
+            },
+            startDate: {
+                required: true
+            },
+            endDate: {
+                required: true
+            },
+        };
+        const messages = {
+            name: "Vui lòng nhập tên và tên < 50 ký tự",
+            startDate: "Vui lòng nhập Start Date",
+            endDate: "Vui lòng nhập End Date",
+        };
+
+        form.validate({
+            rules: rules,
+            messages: messages
+        });
+
+        function list() {
+            $(location).attr('href', './list');
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const startDate = document.querySelector('#startDate');
+            const endDate = document.querySelector('#endDate');
+
+            startDate.addEventListener('change', function () {
+                const startDateVal = this.value;
+                if (startDateVal && endDate.value && startDateVal > endDate.value) {
+                    endDate.value = '';
+                } else {
+                    endDate.disabled = false;
+                    endDate.min = startDateVal;
+                }
+
+                const startDates = document.querySelectorAll('input[id^="startDate-"]');
+                startDates.forEach(function (startDate) {
+                    startDate.value = startDateVal;
+                    startDate.min = startDateVal;
+                });
+
+                const endDates = document.querySelectorAll('input[id^="endDate-"]');
+                endDates.forEach(function (endDateObj) {
+                    endDateObj.min = startDateVal;
+                    if (!endDate.value) {
+                        endDateObj.value = endDate.value;
+                    }
+                });
+            });
+
+            endDate.addEventListener('change', function () {
+                let endDateVal = this.value;
+                if (startDate.value && endDateVal && startDate.value > endDateVal) {
+                    endDate.value = '';
+                    endDateVal = '';
+                }
+
+                const endDates = document.querySelectorAll('input[id^="endDate-"]');
+                endDates.forEach(function (endDate) {
+                    endDate.value = endDateVal;
+                    endDate.max = endDateVal;
+                });
+
+                const startDates = document.querySelectorAll('input[id^="startDate-"]');
+                startDates.forEach(function (startDate) {
+                    startDate.max = endDateVal;
+                });
+            });
+        });
+
+        function listProduct() {
+            const result = [];
+            $('#data-table').find('tr[id^="item-product-"]').each(function () {
+                const obj = {};
+                $(this).find('input, select').each(function () {
+                    obj[this.name] = $(this).val();
+                });
+                result.push(obj);
+            });
+            console.log(result);
+            return result;
+        }
+
+        function validateTableInputs() {
+            // Select all input elements within the table body
+            const inputs = document.querySelectorAll('#data-table input');
+            // Iterate over each input element
+            for (let i = 0; i < inputs.length; i++) {
+                // If the input is empty, alert the user, focus and highlight the input, then return false
+                if (inputs[i].value === '') {
+                    alert('Vui lòng điền đủ thông tin sản phẩm khuyến mãi');
+                    inputs[i].focus();
+                    inputs[i].style.borderColor = 'red'; // Add a red border
+                    return false;
+                } else {
+                    inputs[i].style.borderColor = ''; // Reset border color if input is filled
+                }
+            }
+            // If all inputs are filled, return true
+            return true;
+        }
+
+        function loadDataTable(data) {
+            let indexProductHtml = $('#indexProduct');
+            let indexProduct = indexProductHtml.val();
+            let item =
+                `
+          <tr id = "item-product-${indexProduct}">
+            <td style="width: 20%">
+              <select class="form-select " name="idProduct" id="product-${indexProduct}">
+              </select>
+            </td>
+            <td style="width: 10%">
+              <input type="number" class="form-control" name="discountPrice" id="discountPrice-${indexProduct}" style="width: 80%">
+              <input type="number" class="form-control" name="id" id="productFlashSale-${indexProduct}" hidden="hidden" value="0">
+            </td>
+            <td style="width: 10%">
+              <input type="number" class="form-control" name="sellQuantity" id="sellQuantity-${indexProduct}" style="width: 80%">
+            </td>
+            <td>
+              <input type="datetime-local" class="form-control" name="startDate" id="startDate-${indexProduct}">
+            </td>
+            <td>
+              <input type="datetime-local" class="form-control" name="endDate" id="endDate-${indexProduct}">
+            </td>
+            <td style="width: 10%">
+              <select class="form-select " name="addDiscount" id="addDiscount-${indexProduct}" >
+                <option selected="" value="1">Cho phép</option>
+                <option value="0">Không cho phép</option>
+              </select>
+            </td>
+            <td style="width: 10%">
+              <select class="form-select " name="status" id="status-${indexProduct}">
+                <option selected="" value="1">Sử dụng</option>
+                <option value="0">Không sử dụng</option>
+              </select>
+            </td>
+            <td style="width: 10%">
+              <i style="font-size: 25px; cursor: pointer" class="bi bi-dash-circle" onclick="deleteProduct('#item-product-${indexProduct}')"></i>
+            </td>
+          </tr>
+      `;
+            $('#data-table').append(item);
+
+
+            const startDateParent = $('#startDate');
+            const endDateParent = $('#endDate');
+            const startDate = document.querySelector('#startDate-' + indexProduct);
+            const endDate = document.querySelector('#endDate-' + indexProduct);
+
+            if (startDateParent.val()) {
+                startDate.value = startDateParent.val()
+                startDate.min = startDateParent.val()
+                startDate.max = endDateParent.val()
+
+                endDate.disabled = false;
+
+            }
+            if (endDateParent.val()) {
+                endDate.value = endDateParent.val()
+                endDate.max = endDateParent.val()
+                endDate.min = startDateParent.val()
+            }
+
+            startDate.addEventListener('change', () => {
+                if (startDate.value && endDate.value && startDate.value > endDate.value) {
+                    endDate.value = '';
+                } else {
+                    endDate.disabled = false;
+                    endDate.min = startDate.value;
+                    endDate.max = endDateParent.val()
+                }
+            });
+            endDate.addEventListener('change', () => {
+                if (startDate.value && endDate.value && startDate.value > endDate.value) {
+                    endDate.value = '';
+                } else {
+                    startDate.max = endDate.value;
+                }
+            });
+
+            loadDataSelect("product-" + indexProduct, apiDomain + API.getMerchandiseProductUrl(), '0', "Sản Phẩm");
+
+            if (data) {
+                console.log(data)
+                $('#productFlashSale-' + indexProduct).val(data.id)
+                $('#startDate-' + indexProduct).val(data.startDate)
+                $('#endDate-' + indexProduct).val(data.endDate)
+                $("#status-" + indexProduct).val(data.status).change();
+                $("#addDiscount-" + indexProduct).val(data.addDiscount);
+                $("#discountPrice-" + indexProduct).val(data.discountPrice);
+                $("#sellQuantity-" + indexProduct).val(data.sellQuantity);
+                $("#product-" + indexProduct).val(data.idProduct);
+                $("#item-product-" + indexProduct + " i.bi.bi-dash-circle").attr("onclick", "deleteProductSale('#item-product-" + indexProduct + "', " + data.id + ")");
+            } else {
+                $("#item-product-" + indexProduct + "i.bi.bi-dash-circle").attr("onclick", "deleteProduct('#item-product-" + indexProduct + "')");
+            }
+            indexProduct++;
+            indexProductHtml.val(indexProduct);
+            indexProductHtml.attr('value', indexProduct);
+        }
+
+        function loadDataSelect(select, url, focus, name) {
+            let param = 'enabledPage=false';
+            let res = ajaxCall(url, param, 'GET');
+            if (res.status === 'success') {
+                res.data.forEach((object) => {
+                    if (focus === object.id) {
+                        $('#' + select).append('<option value=' + object.id + ' selected>' + object.name + '</option>');
+                    } else {
+                        $('#' + select).append('<option value=' + object.id + '>' + object.name + '</option>');
+                    }
+                });
+            } else {
+                alert(res.msg);
+            }
+
+        }
+
+        function productAdd() {
+            loadDataTable();
+        }
+
+        function deleteProduct(id) {
+            $(id).remove();
+        }
+
+        function deleteProductSale(element, id) {
+            if (confirm("Bạn có muốn xóa sản phẩm này không?")) {
+                let res = ajaxCall(apiDomain + API.getSalesProductFlashSaleUrl(), {ids: [id]}, 'DELETE');
+                if (res.status === 'success') {
+                    $(element).remove();
+                } else {
+                    alert(res.msg);
+                }
+            }
+        }
+
+    </script>
+</th:block>

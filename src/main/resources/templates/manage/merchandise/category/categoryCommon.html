@@ -1,0 +1,211 @@
+<th:block th:fragment="bannerPage">
+    <div id="banner">
+        <div id="listBanner" class="mb-3">
+            <div id="banner-item">
+                <div class="row mb-2">
+                    <div class="col-sm-2"></div>
+                    <div class="col-sm-4">
+                        <div id="image-preview-banner" class="img-fluid" style="position:relative; display: none"></div>
+                        <input name="urlImg" id-img-preview="image-preview-banner" id="image-html-banner" type="file" accept="image/*" style="display: none" onchange="showImgPreview('image-preview-banner','image-html-banner',this)">
+                    </div>
+                </div>
+                <div class="row">
+                    <label class="col-sm-2 col-form-label">Banner</label>
+                    <div class="col-sm-10">
+                        <div class="row">
+                            <div class="col-sm-1">
+                                <label style="cursor: pointer" for="image-html-banner"><i style="font-size: 25px;" class="bi bi-upload"></i></label>
+                            </div>
+                            <div class="col-sm-9">
+                                <input type="text" name="link" class="form-control" placeholder="Link">
+                            </div>
+                            <div class="col-sm-2">
+                                <i style="font-size: 25px; cursor: pointer" class="bi bi-plus-circle" onclick="addBanner()"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <input type="hidden" name="indexBanner" id="indexBanner" value="1"/>
+    </div>
+    <div id="bannerPc">
+        <div id="listBannerPc" class="mb-3">
+            <div id="banner-item-pc">
+                <div class="row mb-2">
+                    <div class="col-sm-2"></div>
+                    <div class="col-sm-4">
+                        <div id="image-preview-banner-pc" class="img-fluid" style="position:relative; display: none"></div>
+                        <input name="urlImg" id-img-preview="image-preview-banner-pc" id="image-html-banner-pc" type="file" accept="image/*" style="display: none" onchange="showImgPreview('image-preview-banner-pc','image-html-banner-pc',this)">
+                    </div>
+                </div>
+                <div class="row">
+                    <label class="col-sm-2 col-form-label">Banner Pc</label>
+                    <div class="col-sm-10">
+                        <div class="row">
+                            <div class="col-sm-1">
+                                <label style="cursor: pointer" for="image-html-banner-pc"><i style="font-size: 25px;" class="bi bi-upload"></i></label>
+                            </div>
+                            <div class="col-sm-9">
+                                <input type="text" name="link" class="form-control" placeholder="Link">
+                            </div>
+                            <div class="col-sm-2">
+                                <i style="font-size: 25px; cursor: pointer" class="bi bi-plus-circle" onclick="addBannerPc()"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <input type="hidden" name="indexBannerPc" id="indexBannerPc" value="1"/>
+    </div>
+
+    <script th:inline="javascript">
+        function addBanner(){
+            let bannerHtml = $('#indexBanner');
+            let indexBanner = bannerHtml.val();
+            let item = ` <div id="banner-item-${indexBanner}">
+                <div class="row mb-2">
+                    <div class="col-sm-2"></div>
+                    <div class="col-sm-4">
+                        <div id="image-preview-banner-${indexBanner}" class="img-fluid mt-3" style="position:relative; display: none"></div>
+                        <input name="urlImg" id-img-preview="image-preview-banner-${indexBanner}" id="image-html-banner-${indexBanner}" type="file" accept="image/*" style="display: none" onchange="showImgPreview('image-preview-banner-${indexBanner}','image-html-banner-${indexBanner}',this)">
+                    </div>
+                </div>
+                <div class="row">
+                    <label class="col-sm-2"></label>
+                    <div class="col-sm-10">
+                        <div class="row">
+                            <div class="col-sm-1">
+                                <label style="cursor: pointer" for="image-html-banner-${indexBanner}"><i style="font-size: 25px;" class="bi bi-upload"></i></label>
+                            </div>
+                            <div class="col-sm-9">
+                                <input type="text" name="link" class="form-control" placeholder="Link">
+                            </div>
+                            <div class="col-sm-2">
+                                <i style="font-size: 25px; cursor: pointer" class="bi bi-plus-circle" onclick="addBanner()"></i>
+                                <i style="font-size: 25px; cursor: pointer" class="bi bi-dash-circle" onclick="deleteBanner('#banner-item-${indexBanner}')"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+            $('#listBanner').append(item);
+            indexBanner ++;
+            bannerHtml.val(indexBanner);
+            bannerHtml.attr('value',indexBanner);
+        }
+        function addBannerPc(){
+            let bannerPcHtml = $('#indexBannerPc');
+            let indexBannerPc = bannerPcHtml.val();
+            let item = ` <div id="banner-item-pc-${indexBannerPc}">
+                <div class="row mb-2">
+                    <div class="col-sm-2"></div>
+                    <div class="col-sm-4">
+                        <div id="image-preview-banner-pc-${indexBannerPc}" class="img-fluid mt-3" style="position:relative; display: none"></div>
+                        <input name="urlImg" id-img-preview="image-preview-banner-pc-${indexBannerPc}" id="image-html-banner-pc-${indexBannerPc}" type="file" accept="image/*" style="display: none" onchange="showImgPreview('image-preview-banner-pc-${indexBannerPc}','image-html-banner-pc-${indexBannerPc}',this)">
+                    </div>
+                </div>
+                <div class="row">
+                    <label class="col-sm-2"></label>
+                    <div class="col-sm-10">
+                        <div class="row">
+                            <div class="col-sm-1">
+                                <label style="cursor: pointer" for="image-html-banner-pc-${indexBannerPc}"><i style="font-size: 25px;" class="bi bi-upload"></i></label>
+                            </div>
+                            <div class="col-sm-9">
+                                <input type="text" name="link" class="form-control" placeholder="Link">
+                            </div>
+                            <div class="col-sm-2">
+                                <i style="font-size: 25px; cursor: pointer" class="bi bi-plus-circle" onclick="addBannerPc()"></i>
+                                <i style="font-size: 25px; cursor: pointer" class="bi bi-dash-circle" onclick="deleteBanner('#banner-item-pc-${indexBannerPc}')"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+            $('#listBannerPc').append(item);
+            indexBannerPc ++;
+            bannerPcHtml.val(indexBannerPc);
+            bannerPcHtml.attr('value',indexBannerPc);
+        }
+        function attributeAdd(){
+            let attributesHtml = $('#indexAttributes');
+            let indexAttributes = attributesHtml.val();
+            let item = `<div id="attributes-item-${indexAttributes}">
+                            <div class="row">
+                                <label class="col-sm-2"></label>
+                                <div class="col-sm-2">
+                                    <input type="text" class="form-control" name="key">
+                                </div>
+                                <div class="col-sm-3">
+                                    <select class="form-select " type="select-one" name="type" id = 'type-${indexAttributes}'>
+                                        <option value="BUILD-IN">build in</option>
+                                        <option selected="" value="NUMBER">number</option>
+                                        <option value="TEXT">text</option>
+                                        <option value="MULTI-SELECT">Select</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-3" name = "choices" style="display: none">
+                                    <input type="text" class="form-control" name="value">
+                                </div>
+
+                                <div class="col-sm-2">
+                                    <div>
+                                        <i style="font-size: 25px; cursor: pointer" class="bi bi-plus-circle" onclick="attributeAdd()"></i>
+                                        <i style="font-size: 25px; cursor: pointer" class="bi bi-dash-circle" onclick="deleteBanner('#attributes-item-${indexAttributes}')"></i>
+                                    </div>
+                                </div>
+                        </div>
+
+                        `;
+            $('#listAttributes').append(item);
+            indexAttributes ++;
+            attributesHtml.val(indexAttributes);
+            attributesHtml.attr('value',indexAttributes);
+            $(`#type-${indexAttributes}`).change();
+        }
+        function deleteBanner(id){
+            $(id).remove();
+        }
+        function buildJsonBanner(){
+            let checkBanner = getJsonByForm('banner','listBanner',false,true,true,true,true);
+            if(false){
+                alert('Vui lòng nhập đầy đủ thông tin banner');
+                return false;
+            }else {
+                return getJsonByForm('banner', 'listBanner', false, false, false, false, true);
+            }
+        }
+        function buildJsonBannerPc(){
+            let checkBanner = getJsonByForm('bannerPc','listBannerPc',false,true,true,true,true);
+            if(false){
+                alert('Vui lòng nhập đầy đủ thông tin bannerPc');
+                return false;
+            }else{
+                return getJsonByForm('bannerPc', 'listBannerPc', false, false, false, false, true);
+            }
+        }
+        function buildJsonAttributes(){
+            // let checkBanner = getJsonByForm('attributes','listAttributes',false,true,true,true,true);
+            return getJsonByForm('attributes', 'listAttributes', false, false, false, false, true);
+        }
+        function buildJson(name){
+            let json = {};
+            switch(name) {
+                case 'BANNER':
+                    json = buildJsonBanner().listBanner;
+                    break;
+                case 'BANNER_PC':
+                    json = buildJsonBannerPc().listBannerPc;
+                    break;
+                case 'ATTRIBUTES':
+                    json = buildJsonAttributes();
+                    break;
+                default:
+            }
+            return json;
+        }
+
+    </script>
+</th:block>

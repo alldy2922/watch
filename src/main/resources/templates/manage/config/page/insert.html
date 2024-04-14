@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{manage/layout/layout :: main-fragment(
+                                                ~{:: title},
+                                                ~{:: #css-resources},
+                                                ~{:: #js-resources},
+                                                ~{:: #main-content}
+                                               )}">
+<head>
+  <meta charset="UTF-8">
+  <title>Thêm page</title>
+
+  <th:block id="css-resources">
+    <style>
+
+    </style>
+  </th:block>
+
+</head>
+<body>
+<th:block id="main-content">
+  <main id="main" class="main">
+
+    <div class="pagetitle">
+      <h1>Thêm page</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="/admin/config/page">Page</a></li>
+          <li class="breadcrumb-item active"><a href="/admin/config/page/insert"></a>Thêm mới</li>
+        </ol>
+      </nav>
+    </div><!-- End Page Title -->
+
+    <section class="section">
+      <div class="row">
+        <div class="col-lg-12">
+
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title"></h5>
+
+              <!-- General Form Elements -->
+              <form id="form-page">
+                <div class="row mb-3">
+                  <label class="col-sm-2 col-form-label">Tên page</label>
+                  <div class="col-sm-10">
+                    <input type="text" name="pageName" class="form-control" id="page-name">
+                  </div>
+                </div>
+
+                <div class="row mb-3">
+                  <label class="col-sm-2 col-form-label">Kiểu page</label>
+                  <div class="col-sm-10">
+                    <select class="form-select" name="type" aria-label="" id="page-type">
+                      <option selected="" value="HOME">Home</option>
+                    </select>
+                  </div>
+                </div>
+
+                <!--page-->
+                <div id="html-data">
+                  <th:block th:switch="${type}">
+                    <!-- * for default case -->
+                    <th:block th:case="*">
+                      <th:block th:replace="~{/manage/config/page/pages/home :: ${homePage}}"></th:block>
+                    </th:block>
+                  </th:block>
+                </div>
+
+                <!--list component-->
+                <div id="listComponent">
+                  <div class="row mt-3 mb-2">
+                    <label class="col-sm-2 col-form-label">Component</label>
+                    <div class="col-sm-10">
+                      <div class="row">
+                        <div class="col-sm-10">
+                          <select class="form-select" name="components" id="list-component" aria-label="Default select example">
+
+                          </select>
+                        </div>
+                        <div class="col-sm-2">
+                          <i style="font-size: 25px; cursor: pointer" class="bi bi-plus-circle" onclick="addComponent()"></i>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row mb-3 mt-3">
+                  <label class="col-sm-2 col-form-label">Trạng thái</label>
+                  <div class="col-sm-10">
+                    <select class="form-select" name="status" aria-label="" id="page-status">
+                      <option selected="" value="1">Sử dụng</option>
+                      <option value="0">Không sử dụng</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="row mb-3">
+                  <label class="col-sm-2 col-form-label"></label>
+                  <div class="col-sm-10">
+                    <button type="button" class="btn btn-primary" onclick="save()">Lưu</button>
+                    <button type="button" class="btn btn-danger" onclick="cancel('/admin/config/page')">Hủy</button>
+                  </div>
+                </div>
+
+              </form>
+              <!-- End General Form Elements -->
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+</th:block>
+
+<th:block id="js-resources">
+  <script th:src="@{/manage/js/config/page.js}"></script>
+  <script th:inline="javascript">
+
+    $(document).ready(function() {
+      addOptionComponent('list-component');
+    });
+    function save(){
+      if($("#form-page").valid()){
+        let pageType = $("#page-type option:selected").val();
+        let pageJson = buildJson(pageType);
+        if(!pageJson){
+          return false;
+        }
+        if(!$("select[name='components']").val()){
+          alert("Vui lòng chọn component");
+          return false;
+        }
+        let components = [];
+        $("select[name='components']").each(function() {
+          components.push($(this).find(":selected").val());
+        });
+        let param = {};
+        param['name'] = $('#page-name').val();
+        param['type'] = pageType;
+        param['data'] = JSON.stringify(pageJson);
+        param['htmlData'] = $('#html-data').html();
+        param['components'] = components;
+        param['status'] = $("#page-status option:selected").val();
+
+        let res = ajaxCall(apiDomain + '/api/v1/admin/config/page',param,'post');
+        if(res.status=="success") {
+          alert("Thêm mới thành công");
+          $(location).attr('href', '/admin/config/page');
+        }
+      }
+
+    }
+
+  </script>
+</th:block>
+</body>
+</html>
